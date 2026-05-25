@@ -7,7 +7,7 @@ export function SiteHeader() {
     <header className="fixed inset-x-0 top-0 z-50">
       <div className="nav-fade pointer-events-none absolute inset-x-0 top-0 h-20 bg-background" />
       <nav className="relative w-full">
-        <div className="relative mx-auto flex h-16 max-w-2xl items-center justify-between px-6 lg:px-0">
+        <div className="relative mx-auto flex h-16 max-w-3xl items-center justify-between px-6 lg:px-0">
           <div className="flex items-center gap-5 font-sans text-sm text-muted-2 md:gap-6">
             {navItems.map((item, index) => (
               <a

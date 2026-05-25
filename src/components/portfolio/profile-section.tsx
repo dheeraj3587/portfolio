@@ -1,6 +1,11 @@
+import { Suspense } from "react";
 import { Globe2, Mail, MapPin, UserRound, X } from "lucide-react";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { GithubCalendar } from "@/components/ui/github-calendar";
+import {
+  GitHubContributions,
+  GitHubContributionsFallback,
+} from "@/components/portfolio/github-contributions";
+import { getCachedContributions } from "@/lib/get-cached-contributions";
 import { profile, socialLinks, techStack } from "@/lib/portfolio-data";
 import { Info } from "./info";
 import { Reveal } from "./reveal";
@@ -8,6 +13,8 @@ import { SectionLabel } from "./section-label";
 import { GitHubIcon, TechIcon } from "./tech-icon";
 
 export function ProfileSection() {
+  const contributions = getCachedContributions(profile.githubUsername);
+
   return (
     <section id="home">
       <Reveal>
@@ -55,7 +62,7 @@ export function ProfileSection() {
       <Reveal delay={140}>
         <div
           id="about"
-          className="mb-8 max-w-2xl font-sans text-[13.5px] font-[450] leading-[1.85] text-muted-foreground sm:text-[15px]"
+          className="mb-8 font-sans text-[13.5px] font-[450] leading-[1.85] text-muted-foreground sm:text-[15px]"
         >
           <p>
             I build Android apps end-to-end, obsessing over the details that
@@ -149,13 +156,13 @@ export function ProfileSection() {
       </Reveal>
 
       <Reveal delay={300}>
-        <div className="contribution-scroll -mx-6 mt-10 overflow-x-auto sm:mx-0 sm:overflow-visible">
-          <div className="min-w-[580px] px-6 sm:min-w-0 sm:px-0">
-            <GithubCalendar
-              username={profile.githubUsername}
-              colorSchema="gray"
+        <div className="-mx-6 mt-10 sm:mx-0">
+          <Suspense fallback={<GitHubContributionsFallback />}>
+            <GitHubContributions
+              contributions={contributions}
+              githubProfileUrl={socialLinks.github}
             />
-          </div>
+          </Suspense>
         </div>
       </Reveal>
 
