@@ -24,9 +24,9 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "Dheeraj - Product Engineer",
+  title: "Dheeraj - Android Developer",
   description:
-    "Portfolio of Dheeraj, a full-stack product engineer building polished web products.",
+    "Portfolio of Dheeraj, an Android developer building polished mobile products with Kotlin, Jetpack Compose, and Firebase.",
 };
 
 export default function RootLayout({

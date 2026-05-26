@@ -1,6 +1,9 @@
 import { Suspense } from "react";
 import { Globe2, Mail, MapPin, UserRound, X } from "lucide-react";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import {
+  AvatarFallback,
+  LiquidMetalAvatar,
+} from "@/components/ui/liquid-metal-avatar";
 import {
   GitHubContributions,
   GitHubContributionsFallback,
@@ -19,11 +22,15 @@ export function ProfileSection() {
     <section id="home">
       <Reveal>
         <div className="mb-8 flex items-center gap-5">
-          <Avatar className="size-18 rounded-xl border border-border sm:size-20">
-            <AvatarFallback className="rounded-xl bg-gradient-to-br from-zinc-100 to-zinc-200 text-2xl font-semibold tracking-tight text-zinc-600 dark:from-zinc-800 dark:to-zinc-900 dark:text-zinc-300">
+          <LiquidMetalAvatar
+            size="lg"
+            className="size-18 sm:size-20"
+            aria-label={profile.name}
+          >
+            <AvatarFallback className="rounded-full bg-gradient-to-br from-zinc-100 to-zinc-200 text-2xl font-semibold tracking-tight text-zinc-600 dark:from-zinc-800 dark:to-zinc-900 dark:text-zinc-300">
               {profile.initials}
             </AvatarFallback>
-          </Avatar>
+          </LiquidMetalAvatar>
           <div className="min-w-0 flex-1">
             <h1 className="font-sans text-4xl font-semibold leading-tight tracking-tight text-foreground sm:text-5xl md:text-[3rem]">
               {profile.name}
@@ -160,7 +167,6 @@ export function ProfileSection() {
           <Suspense fallback={<GitHubContributionsFallback />}>
             <GitHubContributions
               contributions={contributions}
-              githubProfileUrl={socialLinks.github}
             />
           </Suspense>
         </div>
