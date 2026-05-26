@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" width="100%" height="100%">
+  <!-- Left/Bottom Orange-Red shape -->
+  <path d="M 53 103 L 153 103 L 103 153 L 153 203 L 53 203 Z" fill="#F05138" />
+  <!-- Right/Top Blue-Indigo shape -->
+  <path d="M 103 53 L 203 53 L 203 153 L 103 153 L 153 103 Z" fill="#4860FF" />
+</svg>

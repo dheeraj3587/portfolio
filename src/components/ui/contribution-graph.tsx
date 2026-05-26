@@ -74,11 +74,11 @@ const DEFAULT_LABELS: Labels = {
 };
 
 const THEME = cn(
-  'data-[level="0"]:fill-muted-foreground/5',
-  'data-[level="1"]:fill-muted-foreground/20',
-  'data-[level="2"]:fill-muted-foreground/40',
-  'data-[level="3"]:fill-muted-foreground/60',
-  'data-[level="4"]:fill-muted-foreground/80',
+  'data-[level="0"]:fill-[#f1f3f5] dark:data-[level="0"]:fill-[#161b22]',
+  'data-[level="1"]:fill-[#dce1e6] dark:data-[level="1"]:fill-[#22303c]',
+  'data-[level="2"]:fill-[#b2bcc6] dark:data-[level="2"]:fill-[#3d5061]',
+  'data-[level="3"]:fill-[#788896] dark:data-[level="3"]:fill-[#5a7288]',
+  'data-[level="4"]:fill-[#485866] dark:data-[level="4"]:fill-[#8ea4bc]',
 );
 
 type ContributionGraphContextType = {
@@ -375,7 +375,7 @@ export const ContributionGraphCalendar = ({
       >
         <title>{title}</title>
         {!hideMonthLabels && (
-          <g className="fill-current selection:fill-selection-foreground">
+          <g className="fill-neutral-400 dark:fill-neutral-500 selection:fill-selection-foreground text-[10px] font-mono tracking-[0.2em] uppercase">
             {monthLabels.map(({ label, weekIndex }) => (
               <text
                 dominantBaseline="hanging"
@@ -467,7 +467,7 @@ export const ContributionGraphLegend = ({
       className={cn("ml-auto flex items-center gap-0.75", className)}
       {...props}
     >
-      <span className="mr-1 text-muted-foreground">
+      <span className="mr-1">
         {labels.legend?.less || "Less"}
       </span>
       {new Array(maxLevel + 1).fill(undefined).map((_, level) =>
@@ -487,7 +487,7 @@ export const ContributionGraphLegend = ({
           </svg>
         ),
       )}
-      <span className="ml-1 text-muted-foreground">
+      <span className="ml-1">
         {labels.legend?.more || "More"}
       </span>
     </div>

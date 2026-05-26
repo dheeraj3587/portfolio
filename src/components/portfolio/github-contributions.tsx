@@ -35,11 +35,19 @@ export function GitHubContributions({
   return (
     <TooltipProvider delayDuration={0} disableHoverableContent>
       <ContributionGraph
-        className={cn("mx-auto py-2", className)}
+        className={cn("mx-auto py-3", className)}
         data={data}
-        blockSize={11}
-        blockMargin={3}
-        blockRadius={2}
+        blockSize={13.5}
+        blockMargin={4}
+        blockRadius={2.5}
+        fontSize={11}
+        labels={{
+          months: ["JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC", "JAN", "FEB", "MAR", "APR", "MAY"],
+          legend: {
+            less: "LESS",
+            more: "MORE",
+          },
+        }}
       >
         <ContributionGraphCalendar
           className="contribution-scroll px-2"
@@ -56,7 +64,7 @@ export function GitHubContributions({
                   />
                 </g>
               </TooltipTrigger>
-              <TooltipContent className="font-sans">
+              <TooltipContent className="font-sans text-xs">
                 <p>
                   {activity.count} contribution
                   {activity.count === 1 ? "" : "s"} on{" "}
@@ -66,24 +74,15 @@ export function GitHubContributions({
             </Tooltip>
           )}
         </ContributionGraphCalendar>
-        <ContributionGraphFooter className="px-2">
+        <ContributionGraphFooter className="px-2 mt-3 flex items-center justify-between text-[11px] font-mono tracking-[0.2em] uppercase text-neutral-400 dark:text-neutral-500">
           <ContributionGraphTotalCount>
             {({ totalCount, year }) => (
-              <div className="text-muted-foreground">
-                {totalCount.toLocaleString("en")} contributions in {year} on{" "}
-                <a
-                  className="text-foreground underline-offset-2 hover:underline"
-                  href={githubProfileUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  GitHub
-                </a>
-                .
+              <div className="font-semibold text-[#111111]/80 dark:text-white/80">
+                {totalCount} CONTRIBUTIONS · {year}–{(year + 1).toString().slice(-2)}
               </div>
             )}
           </ContributionGraphTotalCount>
-          <ContributionGraphLegend />
+          <ContributionGraphLegend className="text-[11px] font-mono tracking-[0.2em] uppercase text-neutral-400 dark:text-neutral-500" />
         </ContributionGraphFooter>
       </ContributionGraph>
     </TooltipProvider>

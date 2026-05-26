@@ -11,10 +11,10 @@ export function Info({
 }) {
   return (
     <div className="space-y-1">
-      <div className="font-sans text-[10px] font-medium uppercase tracking-[0.14em] text-muted-2 sm:text-[11px]">
+      <div className="font-sans text-xs font-medium uppercase tracking-[0.14em] text-muted-2 sm:text-[13px]">
         {label}
       </div>
-      <div className="flex items-center gap-2 font-sans text-[13.5px] font-medium text-muted-foreground sm:text-[15px]">
+      <div className="flex items-center gap-2.5 font-sans text-base font-medium text-muted-foreground sm:text-lg">
         <span className="text-muted-2">{icon}</span>
         {value}
       </div>

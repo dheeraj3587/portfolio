@@ -38,30 +38,37 @@ export const socialLinks = {
 };
 
 export const techStack: TechItem[] = [
-  { id: "typescript", name: "TypeScript", src: "/icons/tech/typescript.svg" },
-  { id: "javascript", name: "JavaScript", src: "/icons/tech/js.svg" },
-  { id: "python", name: "Python", src: "/icons/tech/python.svg" },
+  // Languages
+  { id: "kotlin", name: "Kotlin", src: "/icons/tech/kotlin.svg" },
   { id: "java", name: "Java", src: "/icons/tech/java.svg" },
-  { id: "nodejs", name: "Node.js", src: "/icons/tech/nodejs.svg" },
-  { id: "react", name: "React", src: "/icons/tech/react.svg" },
+  { id: "typescript", name: "TypeScript", src: "/icons/tech/typescript.svg" },
+
+  // Android Core
   {
-    id: "nextjs",
-    name: "Next.js",
-    src: "/icons/tech/nextjs2-dark.svg",
-    invertOnLight: true,
+    id: "jetpack-compose",
+    name: "Jetpack Compose",
+    src: "/icons/tech/jetpack-compose.svg",
   },
+  { id: "mvvm", name: "MVVM", src: "/icons/tech/mvvm.svg" },
+  { id: "hilt", name: "Hilt", src: "/icons/tech/hilt.svg" },
+  { id: "coroutines", name: "Coroutines", src: "/icons/tech/coroutines.svg" },
+  { id: "room", name: "Room", src: "/icons/tech/room.svg" },
+  { id: "sqlite", name: "SQLite", src: "/icons/tech/sqlite.svg" },
+
+  // Backend & Networking
+  { id: "firebase", name: "Firebase", src: "/icons/tech/firebase.svg" },
+  { id: "rest-api", name: "REST APIs", src: "/icons/tech/rest-api.svg" },
+  { id: "graphql", name: "GraphQL", src: "/icons/tech/graphql.svg" },
+  { id: "retrofit", name: "Retrofit", src: "/icons/tech/retrofit.svg" },
+  { id: "ktor", name: "Ktor", src: "/icons/tech/ktor.svg" },
+  { id: "postgresql", name: "PostgreSQL", src: "/icons/tech/postgresql.svg" },
+
+  // Tools & DevOps
   {
-    id: "tailwindcss",
-    name: "Tailwind CSS",
-    src: "/icons/tech/tailwindcss.svg",
+    id: "android-studio",
+    name: "Android Studio",
+    src: "/icons/tech/android-studio.svg",
   },
-  {
-    id: "express",
-    name: "Express.js",
-    src: "/icons/tech/express.png",
-    invertOnDark: true,
-  },
-  { id: "hono", name: "Hono.js", src: "/icons/brands/honojs.png" },
   { id: "git", name: "Git", src: "/icons/tech/git.svg" },
   {
     id: "github",
@@ -69,58 +76,30 @@ export const techStack: TechItem[] = [
     src: "/icons/social/github.png",
     invertOnDark: true,
   },
-  { id: "mongodb", name: "MongoDB", src: "/icons/tech/mongodb.svg" },
-  { id: "mysql", name: "MySQL", src: "/icons/tech/mysql.svg" },
-  { id: "figma", name: "Figma", src: "/icons/tech/figma.svg" },
+  { id: "gradle", name: "Gradle", src: "/icons/tech/gradle.svg" },
   { id: "postman", name: "Postman", src: "/icons/tools/postman.webp" },
-  { id: "nginx", name: "Nginx", src: "/icons/tech/nginx.png" },
-  { id: "bun", name: "Bun", src: "/icons/tech/bun.svg" },
-  { id: "cursor", name: "Cursor AI", src: "/icons/tools/cursor-ai.png" },
+  { id: "cursor-ai", name: "Cursor AI", src: "/icons/tools/cursor-ai.png" },
+  { id: "cicd", name: "CI/CD", src: "/icons/tech/cicd.svg" },
+
+  // Advanced
   {
-    id: "react-router",
-    name: "React Router",
-    src: "/icons/tech/react-router-dark.svg",
-    invertOnLight: true,
+    id: "compose-multiplatform",
+    name: "Compose Multiplatform",
+    src: "/icons/tech/compose-multiplatform.svg",
   },
-  {
-    id: "react-navigation",
-    name: "React Navigation",
-    src: "/icons/tech/react-navigation.svg",
-  },
-  {
-    id: "shadcn",
-    name: "Shadcn UI",
-    src: "/icons/tech/shadcn-ui-dark.svg",
-    invertOnLight: true,
-  },
-  {
-    id: "socket",
-    name: "Socket.IO",
-    src: "/icons/brands/socket_io.svg",
-    socketIcon: true,
-  },
+  { id: "websockets", name: "WebSockets", src: "/icons/tech/websockets.svg" },
+  { id: "media3", name: "Media3", src: "/icons/tech/media3.svg" },
 ];
 
 const projectOnlyTech: TechItem[] = [
   { id: "android", name: "Android", src: "/icons/tech/android.svg" },
-  { id: "kotlin", name: "Kotlin", src: "/icons/tech/kotlin.svg" },
-  {
-    id: "jetpack-compose",
-    name: "Jetpack Compose",
-    src: "/icons/tech/jetpack-compose.svg",
-  },
-  {
-    id: "android-studio",
-    name: "Android Studio",
-    src: "/icons/tech/android-studio.svg",
-  },
-  { id: "gradle", name: "Gradle", src: "/icons/tech/gradle.svg" },
-  { id: "firebase", name: "Firebase", src: "/icons/tech/firebase.svg" },
+  { id: "figma", name: "Figma", src: "/icons/tech/figma.svg" },
 ];
 
 export const techById = new Map(
   [...techStack, ...projectOnlyTech].map((tech) => [tech.id, tech]),
 );
+
 
 export const projects = [
   {

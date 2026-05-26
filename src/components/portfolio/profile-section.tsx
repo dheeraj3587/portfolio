@@ -18,17 +18,17 @@ export function ProfileSection() {
   return (
     <section id="home">
       <Reveal>
-        <div className="mb-7 flex items-center gap-4">
-          <Avatar className="size-15 rounded-xl border border-border sm:size-16">
-            <AvatarFallback className="rounded-xl bg-gradient-to-br from-zinc-100 to-zinc-200 text-lg font-semibold tracking-tight text-zinc-600 dark:from-zinc-800 dark:to-zinc-900 dark:text-zinc-300">
+        <div className="mb-8 flex items-center gap-5">
+          <Avatar className="size-18 rounded-xl border border-border sm:size-20">
+            <AvatarFallback className="rounded-xl bg-gradient-to-br from-zinc-100 to-zinc-200 text-2xl font-semibold tracking-tight text-zinc-600 dark:from-zinc-800 dark:to-zinc-900 dark:text-zinc-300">
               {profile.initials}
             </AvatarFallback>
           </Avatar>
           <div className="min-w-0 flex-1">
-            <h1 className="font-sans text-2xl font-semibold leading-tight tracking-tight text-foreground sm:text-3xl md:text-[2rem]">
+            <h1 className="font-sans text-4xl font-semibold leading-tight tracking-tight text-foreground sm:text-5xl md:text-[3rem]">
               {profile.name}
             </h1>
-            <div className="role-window mt-0.5 font-sans text-sm font-medium text-muted-2 sm:text-[15px]">
+            <div className="role-window mt-1.5 font-sans text-base font-medium text-muted-2 sm:text-lg">
               <div className="role-track">
                 {profile.roles.map((role, index) => (
                   <span key={`${role}-${index}`}>{role}</span>
@@ -40,20 +40,20 @@ export function ProfileSection() {
       </Reveal>
 
       <Reveal delay={80}>
-        <div className="mb-6 mt-10 flex flex-wrap items-start gap-x-8 gap-y-4">
+        <div className="mb-10 mt-14 flex flex-wrap items-start gap-x-12 gap-y-6">
           <Info
             label="Location"
-            icon={<MapPin className="size-[13px]" />}
+            icon={<MapPin className="size-4" />}
             value={profile.location}
           />
           <Info
             label="Email"
-            icon={<Mail className="size-[13px]" />}
+            icon={<Mail className="size-4" />}
             value={profile.email}
           />
           <Info
             label="Pronouns"
-            icon={<UserRound className="size-[13px]" />}
+            icon={<UserRound className="size-4" />}
             value={profile.pronouns}
           />
         </div>
@@ -62,7 +62,7 @@ export function ProfileSection() {
       <Reveal delay={140}>
         <div
           id="about"
-          className="mb-8 font-sans text-[13.5px] font-[450] leading-[1.85] text-muted-foreground sm:text-[15px]"
+          className="mb-12 font-sans text-base font-[450] leading-[1.85] text-muted-foreground sm:text-lg"
         >
           <p>
             I build Android apps end-to-end, obsessing over the details that
@@ -108,16 +108,16 @@ export function ProfileSection() {
       </Reveal>
 
       <Reveal delay={200}>
-        <div className="mb-8 flex h-5 items-center gap-2 font-sans text-[12px] text-muted-foreground sm:text-[13px]">
+        <div className="mb-10 flex h-7 items-center gap-3 font-sans text-sm text-muted-foreground sm:text-base">
           <SpotifyIcon />
-          <span className="font-medium text-foreground">Now Playing</span>
-          <span className="text-muted-2">-</span>
+          <span className="font-medium text-foreground">Last played</span>
+          <span className="text-muted-2">—</span>
           <span>bad guy · Billie Eilish</span>
         </div>
       </Reveal>
 
       <Reveal delay={240}>
-        <div className="mb-6 flex flex-wrap items-center gap-4 text-muted-2">
+        <div className="mb-8 flex flex-wrap items-center gap-5 text-muted-2">
           <a
             aria-label="X profile"
             href={socialLinks.x}
@@ -125,7 +125,7 @@ export function ProfileSection() {
             rel="noreferrer"
             className="text-[#737373] transition-colors duration-150 hover:text-[#111111] dark:text-[#a0a0a0] dark:hover:text-[#f0f0f0]"
           >
-            <X className="size-[18px]" />
+            <X className="size-6" />
           </a>
           <a
             aria-label="GitHub profile"
@@ -143,20 +143,20 @@ export function ProfileSection() {
             rel="noreferrer"
             className="text-[#737373] transition-colors duration-150 hover:text-[#111111] dark:text-[#a0a0a0] dark:hover:text-[#f0f0f0]"
           >
-            <Globe2 className="size-[18px]" />
+            <Globe2 className="size-6" />
           </a>
           <a
             aria-label="Email"
             href={socialLinks.email}
             className="text-[#737373] transition-colors duration-150 hover:text-[#111111] dark:text-[#a0a0a0] dark:hover:text-[#f0f0f0]"
           >
-            <Mail className="size-[18px]" />
+            <Mail className="size-6" />
           </a>
         </div>
       </Reveal>
 
       <Reveal delay={300}>
-        <div className="-mx-6 mt-10 sm:mx-0">
+        <div className="-mx-8 mt-12 sm:mx-0">
           <Suspense fallback={<GitHubContributionsFallback />}>
             <GitHubContributions
               contributions={contributions}
@@ -166,10 +166,10 @@ export function ProfileSection() {
         </div>
       </Reveal>
 
-      <Reveal delay={360} className="mt-12">
+      <Reveal delay={360} className="mt-16">
         <section id="components">
           <SectionLabel>Tech Stack</SectionLabel>
-          <div className="flex flex-wrap items-center gap-3 opacity-95 sm:gap-4">
+          <div className="flex flex-wrap items-center gap-5 opacity-95 sm:gap-6">
             {techStack.map((tech) => (
               <TechIcon key={tech.id} id={tech.id} />
             ))}
@@ -184,7 +184,7 @@ function SpotifyIcon() {
   return (
     <svg
       aria-hidden="true"
-      className="size-3.5 shrink-0 text-[#1db954]"
+      className="size-5 shrink-0 text-[#1db954]"
       viewBox="0 0 24 24"
       fill="currentColor"
     >

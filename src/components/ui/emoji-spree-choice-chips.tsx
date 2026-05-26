@@ -90,7 +90,7 @@ export function EmojiSpreeChips({
 
   return (
     <LazyMotion features={domAnimation}>
-      <div className="relative isolate flex min-h-[500px] w-full max-w-4xl flex-col items-center overflow-hidden py-10 sm:min-h-[600px]">
+      <div className="relative isolate flex w-full max-w-4xl flex-col items-center overflow-hidden py-8 sm:py-10">
         <h2 className="mb-6 w-full self-start px-6 font-sans text-2xl font-bold sm:mb-8 sm:text-3xl">
           Interests
         </h2>
@@ -157,7 +157,7 @@ export function EmojiSpreeChips({
           </AnimatePresence>
         </div>
 
-        <div className="absolute bottom-8 left-1/2 z-20 -translate-x-1/2 sm:bottom-12">
+        <div className="mt-6 flex w-full justify-center">
           <AnimatePresence>
             {selected.length > 0 ? (
               <m.div

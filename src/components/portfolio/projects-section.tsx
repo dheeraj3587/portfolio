@@ -18,9 +18,9 @@ function ProjectCard({ project }: { project: (typeof projects)[number] }) {
           className="object-cover"
         />
       </div>
-      <div className="px-4 py-4 sm:px-5 sm:py-5">
+      <div className="px-6 py-6 sm:px-7 sm:py-7">
         <div className="mb-2 flex items-start justify-between">
-          <CardTitle className="font-sans text-[15px] font-medium tracking-tight text-foreground sm:text-base">
+          <CardTitle className="font-sans text-lg font-medium tracking-tight text-foreground sm:text-xl">
             {project.title}
           </CardTitle>
           <div className="flex items-center gap-2">
@@ -33,7 +33,7 @@ function ProjectCard({ project }: { project: (typeof projects)[number] }) {
                 title="View on GitHub"
                 className="text-zinc-500 transition-colors duration-150 hover:text-zinc-200 dark:text-[#737373] dark:hover:text-[#e0e0e0]"
               >
-                <GitHubIcon className="size-4" />
+                <GitHubIcon className="size-[18px]" />
               </a>
             ) : null}
             {project.links.site ? (
@@ -45,12 +45,12 @@ function ProjectCard({ project }: { project: (typeof projects)[number] }) {
                 title="Visit website"
                 className="text-zinc-500 transition-colors duration-150 hover:text-zinc-200 dark:text-[#737373] dark:hover:text-[#e0e0e0]"
               >
-                <ExternalLink className="size-[18px]" />
+                <ExternalLink className="size-5" />
               </a>
             ) : null}
           </div>
         </div>
-        <CardDescription className="mb-5 max-w-[20rem] font-sans text-[13.5px] leading-[1.75] font-[450] text-muted-foreground sm:text-[14px] dark:text-[#b2b2b2]">
+        <CardDescription className="mb-6 max-w-[24rem] font-sans text-[15px] leading-[1.75] font-[450] text-muted-foreground sm:text-base dark:text-[#b2b2b2]">
           {project.description}
         </CardDescription>
         <div className="mt-auto flex flex-wrap items-center gap-3 opacity-95">
@@ -66,7 +66,7 @@ function ProjectCard({ project }: { project: (typeof projects)[number] }) {
 export function ProjectsSection() {
   return (
     <Reveal delay={120} className="mt-14">
-      <section>
+      <section id="projects">
         <SectionLabel>Featured Projects</SectionLabel>
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           {projects.map((project) => (

@@ -60,6 +60,7 @@
     sans-serif;
   --font-mono:
     var(--font-jetbrains-mono), var(--font-geist-mono), ui-monospace, monospace;
+  --inset-shadow-lg: inset 0 10px 8px color-mix(in oklch, var(--background) 7%, transparent);
 }
 
 .dark {
@@ -131,7 +132,6 @@ button:not(:disabled),
   border-radius: 999px;
 }
 
-
 .contribution-scroll::-webkit-scrollbar {
   display: none;
 }
@@ -152,7 +152,7 @@ button:not(:disabled),
 }
 
 .role-window {
-  height: 1.35rem;
+  height: 1.75rem;
   overflow: hidden;
 }
 
@@ -162,8 +162,8 @@ button:not(:disabled),
 }
 
 .role-track span {
-  height: 1.35rem;
-  line-height: 1.35rem;
+  height: 1.75rem;
+  line-height: 1.75rem;
 }
 
 .invert-on-dark {
@@ -209,23 +209,23 @@ button:not(:disabled),
   }
   18%,
   32% {
-    transform: translateY(-1.35rem);
+    transform: translateY(-1.75rem);
   }
   36%,
   50% {
-    transform: translateY(-2.7rem);
+    transform: translateY(-3.5rem);
   }
   54%,
   68% {
-    transform: translateY(-4.05rem);
+    transform: translateY(-5.25rem);
   }
   72%,
   86% {
-    transform: translateY(-5.4rem);
+    transform: translateY(-7rem);
   }
   92%,
   100% {
-    transform: translateY(-6.75rem);
+    transform: translateY(-8.75rem);
   }
 }
 
@@ -239,3 +239,4 @@ button:not(:disabled),
     animation: none;
   }
 }
+
