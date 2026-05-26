@@ -38,7 +38,7 @@ function LiquidMetalCard({
     <Card
       data-slot='liquid-metal-card'
       className={cn(
-        'relative overflow-hidden bg-transparent ring-0',
+        'group/card relative overflow-hidden rounded-2xl border-0 bg-transparent shadow-none ring-0',
         className
       )}
       {...props}
@@ -58,7 +58,7 @@ function LiquidMetalCard({
         offsetX={offsetX}
         offsetY={offsetY}
       />
-      <div className='absolute inset-0.75 rounded-[calc(1rem-1px)] bg-card inset-shadow-lg' />
+      <div className='absolute inset-0.75 rounded-[calc(1rem-1px)] bg-card-solid inset-shadow-lg' />
       <div className='relative flex flex-col gap-6 group-data-[size=sm]/card:gap-4'>
         {children}
       </div>
