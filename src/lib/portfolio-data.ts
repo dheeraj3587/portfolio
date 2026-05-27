@@ -8,19 +8,24 @@ export type TechItem = {
 };
 
 export const profile = {
-  name: "Dheeraj",
+  name: "Dheeraj Joshi",
+  shortName: "Dheeraj",
   initials: "DJ",
   location: "India",
-  email: "dheerajjoshi@dheerajjoshi.dev",
+  email: "dheerajjoshicontact@gmail.com",
+  phone: "+91 70609 29418",
   pronouns: "he/him",
   githubUsername: "dheeraj3587",
+  available: "Open to work",
+  tagline: "Android & Backend Developer",
+  bio: "Final-year B.Tech (CSE) student building polished Android apps and backend services end-to-end. I work with Kotlin, Jetpack Compose, and Spring Boot — from Room persistence to JWT-secured REST APIs.",
   roles: [
     "Android Developer",
-    "Kotlin Developer",
-    "Java Developer",
+    "Backend Developer",
+    "Kotlin Engineer",
+    "Spring Boot Developer",
     "Mobile Engineer",
-    "Product Engineer",
-    "Detail Oriented",
+    "Problem Solver",
   ],
 };
 
@@ -31,17 +36,27 @@ export const navItems = [
 ];
 
 export const socialLinks = {
-  x: "https://x.com/dheeraj3587",
   github: "https://github.com/dheeraj3587",
-  website: "https://dheerajjoshi.dev",
-  email: `mailto:${profile.email}`,
+  linkedin: "https://www.linkedin.com/in/dheeraj-joshi",
+  leetcode: "https://leetcode.com/u/Dheeraj031224/",
+  codeforces: "https://codeforces.com/profile/joshidheeraj8782",
+  email: "mailto:dheerajjoshicontact@gmail.com",
+  phone: "tel:+917060929418",
 };
+
+export const stats = [
+  { value: "500+", label: "DSA Problems" },
+  { value: "7+", label: "Months Experience" },
+  { value: "3", label: "Live Projects" },
+  { value: "2026", label: "Graduating" },
+];
 
 export const techStack: TechItem[] = [
   // Languages
   { id: "kotlin", name: "Kotlin", src: "/icons/tech/kotlin.svg" },
   { id: "java", name: "Java", src: "/icons/tech/java.svg" },
   { id: "typescript", name: "TypeScript", src: "/icons/tech/typescript.svg" },
+  { id: "python", name: "Python", src: "/icons/tech/python.svg" },
 
   // Android Core
   {
@@ -94,98 +109,84 @@ export const techStack: TechItem[] = [
 const projectOnlyTech: TechItem[] = [
   { id: "android", name: "Android", src: "/icons/tech/android.svg" },
   { id: "figma", name: "Figma", src: "/icons/tech/figma.svg" },
+  { id: "spring-boot", name: "Spring Boot", src: "/icons/tech/java.svg" },
+  { id: "jwt", name: "JWT", src: "/icons/tech/rest-api.svg" },
 ];
 
 export const techById = new Map(
   [...techStack, ...projectOnlyTech].map((tech) => [tech.id, tech]),
 );
 
-
 export const projects = [
   {
-    title: "Pulse Habit Tracker",
+    id: "chime",
+    title: "Chime (Voxa)",
+    subtitle: "Real-Time Chat App",
     description:
-      "An offline-first Android habit tracker with gentle reminders and clean daily insights.",
+      "Real-time 1:1 chat with live message delivery, read receipts, typing indicators, online presence, and FCM push notifications. Built with Jetpack Compose, Hilt DI, and the repository pattern.",
     image: "/images/projects/preview_1.webp",
     links: {
-      site: socialLinks.website,
+      github: "https://github.com/dheeraj3587/Chime",
     },
-    stack: ["android", "kotlin", "jetpack-compose", "firebase", "gradle"],
+    stack: ["kotlin", "jetpack-compose", "firebase", "hilt", "mvvm"],
   },
   {
-    title: "City Commute Companion",
+    id: "crm",
+    title: "Lead Management CRM",
+    subtitle: "Enterprise Backend",
     description:
-      "A real-time Android companion for routes, alerts, and saved trips with smooth UX.",
+      "Spring Boot CRM with full CRUD, pipeline tracking, and stateless JWT auth via custom filter. Service-layer RBAC, normalized PostgreSQL schema with indexed FKs, and DTO-driven API responses.",
     image: "/images/projects/preview_2.webp",
     links: {
-      github: socialLinks.github,
-      site: socialLinks.website,
+      site: "https://lead-dheeraj3587s-projects.vercel.app",
+      github: "https://github.com/dheeraj3587",
     },
-    stack: ["android", "kotlin", "java", "firebase", "android-studio"],
+    stack: ["java", "spring-boot", "postgresql", "jwt"],
   },
 ];
 
 export const experience = [
   {
-    role: "Android Engineer",
+    role: "Final-year Student & Freelance Developer",
     company: "Independent",
-    location: "Remote, Full-time",
-    date: "2026 - Present",
-    body: "Building polished Android apps with Kotlin, Jetpack Compose, and clean architecture.",
+    location: "Remote · Building",
+    date: "2025 — Present",
+    body: "Building Android apps and backend services end-to-end while completing my final year of B.Tech.",
     bullets: [
-      "Designing Compose UI with accessible interaction states and responsive layouts",
-      "Shipping features end-to-end with offline support and reliable sync",
+      "Shipped Chime, a real-time chat app with Firebase Realtime DB, FCM push, presence, and read receipts on Jetpack Compose",
+      "Built Lead Management CRM with Spring Boot, JWT auth, service-layer RBAC, and a normalized PostgreSQL schema",
+      "Solved 500+ DSA problems on LeetCode and Codeforces with consistent top-percentile contest performance",
     ],
-    stack: [
-      "android",
-      "kotlin",
-      "jetpack-compose",
-      "gradle",
-      "firebase",
-      "figma",
-    ],
+    stack: ["kotlin", "java", "jetpack-compose", "firebase", "postgresql", "git"],
     active: true,
   },
   {
-    role: "Android Developer",
-    company: "Selected Work",
-    location: "Freelance",
-    date: "2024 - 2026",
-    body: "Delivered Android apps for clients with an emphasis on performance, clarity, and maintainability.",
+    role: "Software Engineering Evaluator",
+    company: "Outlier AI",
+    location: "Remote · Contract",
+    date: "Nov 2024 — Jun 2025",
+    body: "Reviewed AI-generated code and authored technical prompts for a production code generation model.",
     bullets: [
-      "Integrated REST APIs, authentication, and notifications for mobile workflows",
-      "Improved startup time and stability through profiling and refactors",
+      "Caught bugs in lifecycle handling, coroutine scope leaks, and JPA query patterns across Kotlin and Java code over 7+ months",
+      "Wrote technical prompts covering Android (Room, ViewModel, Retrofit) and backend (Spring Boot, REST design) topics, improving model output quality",
     ],
-    stack: ["android", "kotlin", "java", "firebase", "git", "postman"],
+    stack: ["kotlin", "java", "android-studio", "git"],
     active: false,
+  },
+];
+
+export const education = [
+  {
+    school: "Graphic Era Hill University",
+    location: "Dehradun, India",
+    degree: "B.Tech, Computer Science & Engineering",
+    date: "2022 — 2026",
+    coursework: ["Data Structures & Algorithms", "DBMS", "Operating Systems", "Computer Networks", "OOP"],
   },
 ];
 
 export const footerLinks = [
   { label: "About", href: "#about" },
-  { label: "Services", href: "#home" },
+  { label: "Projects", href: "#projects" },
   { label: "Components", href: "#components" },
-];
-
-export const interests = [
-  { id: "1", label: "Design", emoji: "🎨" },
-  { id: "2", label: "Music", emoji: "🎵" },
-  { id: "3", label: "Gaming", emoji: "🎮" },
-  { id: "4", label: "Cooking", emoji: "🍳" },
-  { id: "5", label: "Travel", emoji: "✈️" },
-  { id: "6", label: "Crypto", emoji: "🪙" },
-  { id: "7", label: "Photography", emoji: "📸" },
-  { id: "8", label: "Coding", emoji: "💻" },
-  { id: "9", label: "Fitness", emoji: "🏋️" },
-  { id: "10", label: "Art", emoji: "🖼️" },
-  { id: "11", label: "Movies", emoji: "🎬" },
-  { id: "12", label: "Reading", emoji: "📚" },
-  { id: "13", label: "Nature", emoji: "🌿" },
-  { id: "14", label: "Coffee", emoji: "☕" },
-  { id: "15", label: "Sports", emoji: "🏀" },
-  { id: "16", label: "Fashion", emoji: "👗" },
-  { id: "17", label: "Writing", emoji: "✍️" },
-  { id: "18", label: "Tech", emoji: "🤖" },
-  { id: "19", label: "Science", emoji: "🔬" },
-  { id: "20", label: "Food", emoji: "🍕" },
 ];

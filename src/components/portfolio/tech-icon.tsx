@@ -3,9 +3,9 @@ import type { ComponentType, SVGProps } from "react";
 import {
   Android,
   Figma,
-  Github,
   Java,
   TypeScript,
+  Github,
 } from "@aliimam/logos";
 import { techById, techStack } from "@/lib/portfolio-data";
 import { cn } from "@/lib/utils";
@@ -14,9 +14,6 @@ type LogoComponent = ComponentType<
   SVGProps<SVGSVGElement> & { size?: number | string; className?: string }
 >;
 
-// Map of portfolio tech ids to @aliimam/logos components.
-// Ids not in this map fall back to the next/image path using the local
-// /icons/... assets defined in portfolio-data.ts.
 const aliLogoById: Record<string, LogoComponent> = {
   typescript: TypeScript,
   java: Java,
@@ -25,11 +22,18 @@ const aliLogoById: Record<string, LogoComponent> = {
   android: Android,
 };
 
-export function TechIcon({ id, size = "lg" }: { id: string; size?: "sm" | "lg" }) {
+export function TechIcon({
+  id,
+  size = "lg",
+  showLabel = true,
+}: {
+  id: string;
+  size?: "sm" | "lg";
+  showLabel?: boolean;
+}) {
   const tech = techById.get(id) ?? techStack[0];
   const isSmall = size === "sm";
-  const iconSize = isSmall ? "size-7 sm:size-8" : "size-8 sm:size-12";
-  const iconMotion = isSmall ? "duration-150 ease-out" : "duration-200";
+  const iconSize = isSmall ? "size-7 sm:size-8" : "size-9 sm:size-11";
   const AliLogo = aliLogoById[id];
 
   return (
@@ -37,9 +41,8 @@ export function TechIcon({ id, size = "lg" }: { id: string; size?: "sm" | "lg" }
       {AliLogo ? (
         <AliLogo
           className={cn(
-            "object-contain transition-transform hover:scale-110 cursor-pointer",
+            "object-contain transition-transform duration-200 ease-out hover:scale-110",
             iconSize,
-            iconMotion,
           )}
           aria-hidden="true"
         />
@@ -47,30 +50,21 @@ export function TechIcon({ id, size = "lg" }: { id: string; size?: "sm" | "lg" }
         <Image
           src={tech.src}
           alt={tech.name}
-          width={36}
-          height={36}
+          width={44}
+          height={44}
           className={cn(
-            "object-contain transition-transform hover:scale-110 cursor-pointer",
+            "object-contain transition-transform duration-200 ease-out hover:scale-110",
             iconSize,
-            iconMotion,
             tech.invertOnDark && "invert-on-dark",
             tech.invertOnLight && "invert-on-light",
-            tech.socketIcon && "socket-icon",
           )}
         />
       )}
-      <span className="absolute bottom-full left-1/2 z-50 mb-4 -translate-x-1/2 translate-y-1 rounded-lg bg-[#111111] px-3.5 py-2 font-sans text-sm font-medium whitespace-nowrap text-[#f0f0f0] opacity-0 transition-[opacity,transform] duration-100 ease-out pointer-events-none group-hover:translate-y-0 group-hover:opacity-100 dark:bg-[#f0f0f0] dark:text-[#111111]">
-        {tech.name}
-      </span>
+      {showLabel ? (
+        <span className="pointer-events-none absolute bottom-full left-1/2 z-50 mb-3 -translate-x-1/2 translate-y-1 whitespace-nowrap rounded-lg bg-foreground px-3 py-1.5 font-sans text-xs font-medium text-background opacity-0 transition-[opacity,transform] duration-150 ease-out group-hover:translate-y-0 group-hover:opacity-100">
+          {tech.name}
+        </span>
+      ) : null}
     </span>
-  );
-}
-
-export function GitHubIcon({ className }: { className?: string }) {
-  return (
-    <Github
-      className={cn("size-6", className)}
-      aria-hidden="true"
-    />
   );
 }

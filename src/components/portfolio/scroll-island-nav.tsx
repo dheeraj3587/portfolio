@@ -19,11 +19,6 @@ const TOPICS: Topic[] = [
     content: "Core tools and technologies.",
   },
   {
-    id: "interests",
-    title: "Interests",
-    content: "Personal interests and hobbies.",
-  },
-  {
     id: "projects",
     title: "Projects",
     content: "Featured work highlights.",
@@ -41,7 +36,5 @@ const TOPICS: Topic[] = [
 ];
 
 export function ScrollIslandNav() {
-  return (
-    <ScrollIsland topics={TOPICS} showContent={false} usePageScroll />
-  );
+  return <ScrollIsland topics={TOPICS} showContent={false} usePageScroll />;
 }

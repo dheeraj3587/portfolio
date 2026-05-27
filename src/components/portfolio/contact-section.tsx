@@ -1,10 +1,14 @@
 import type { ReactNode } from "react";
-import { ArrowUpRight, Calendar, Mail, Send, X } from "lucide-react";
-import { LiquidMetalCard as Card, CardDescription, CardTitle } from "@/components/ui/liquid-metal-card";
+import { ArrowUpRight, Calendar, Mail, Send } from "lucide-react";
+import {
+  LiquidMetalCard as Card,
+  CardDescription,
+  CardTitle,
+} from "@/components/ui/liquid-metal-card";
 import { profile, socialLinks } from "@/lib/portfolio-data";
 import { Reveal } from "./reveal";
 import { SectionLabel } from "./section-label";
-import { VisitorCount } from "./visitor-count";
+import { GitHubIcon, LinkedInIcon } from "./brand-icons";
 
 function ContactRow({
   icon,
@@ -24,18 +28,18 @@ function ContactRow({
       href={href}
       target={external ? "_blank" : undefined}
       rel={external ? "noreferrer" : undefined}
-      className="contact-link-row group flex items-center gap-4 border-b border-black/[0.06] px-6 py-3.5 transition-colors duration-150 ease-in-out hover:bg-black/[0.02] last:border-b-0 dark:border-white/[0.06] dark:hover:bg-white/[0.02]"
+      className="group flex items-center gap-4 border-b border-black/[0.06] px-6 py-3.5 transition-colors duration-150 ease-in-out last:border-b-0 hover:bg-black/[0.02] dark:border-white/[0.06] dark:hover:bg-white/[0.02]"
     >
       <span className="text-muted-2">{icon}</span>
       <span className="min-w-0 flex-1">
-        <span className="block font-sans text-base font-medium text-foreground">
+        <span className="block truncate font-sans text-base font-medium text-foreground">
           {title}
         </span>
-        <span className="mt-0.5 block font-sans text-sm text-muted-2">
+        <span className="mt-0.5 block truncate font-sans text-sm text-muted-2">
           {subtitle}
         </span>
       </span>
-      <ArrowUpRight className="size-5 text-[#737373] transition-colors duration-150 group-hover:text-[#111111] dark:text-[#a0a0a0] dark:group-hover:text-[#f0f0f0]" />
+      <ArrowUpRight className="size-5 text-muted-2 transition-colors duration-150 group-hover:text-foreground" />
     </a>
   );
 }
@@ -46,6 +50,7 @@ export function ContactSection() {
       <section id="contact">
         <SectionLabel>Let&apos;s Work Together</SectionLabel>
         <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
+          {/* LEFT — Get in Touch with LiquidMetal shader */}
           <Card className="flex h-full flex-col px-7 py-6">
             <div className="mb-4">
               <CardTitle className="mb-2 font-sans text-2xl font-medium text-foreground">
@@ -70,17 +75,24 @@ export function ContactSection() {
                 href={socialLinks.email}
               />
               <ContactRow
-                icon={<X className="size-6" />}
-                title="Connect on X"
-                subtitle="Replies within 24 hours"
-                href={socialLinks.x}
+                icon={<LinkedInIcon className="size-6" />}
+                title="Connect on LinkedIn"
+                subtitle="Open to roles and collaboration"
+                href={socialLinks.linkedin}
+              />
+              <ContactRow
+                icon={<GitHubIcon className="size-6" />}
+                title="GitHub"
+                subtitle="See my code and projects"
+                href={socialLinks.github}
               />
             </div>
             <p className="mt-5 font-sans text-sm text-muted-2">
-              Open to remote, freelance and full-time.
+              Open to internship and full-time roles. Replies within 24 hours.
             </p>
           </Card>
 
+          {/* RIGHT — Send a Message form with LiquidMetal shader */}
           <Card className="h-full px-7 py-6">
             <div className="mb-4">
               <CardTitle className="mb-2 font-sans text-2xl font-medium text-foreground">
@@ -93,27 +105,27 @@ export function ContactSection() {
             <form className="space-y-4">
               <input
                 aria-label="Full name"
-                className="contact-input w-full rounded-lg border border-input bg-background px-4 py-3.5 font-sans text-base text-foreground transition-[border-color,background-color] ease-in-out placeholder:text-muted-2 hover:border-black/[0.16] focus:border-black/[0.22] focus:outline-none dark:hover:border-white/[0.15] dark:focus:border-white/[0.18]"
+                className="w-full rounded-lg border border-input bg-background px-4 py-3.5 font-sans text-base text-foreground transition-[border-color,background-color] ease-in-out placeholder:text-muted-2 hover:border-black/[0.16] focus:border-black/[0.22] focus:outline-none dark:hover:border-white/[0.15] dark:focus:border-white/[0.18]"
                 name="name"
                 placeholder="Full Name"
               />
               <input
                 aria-label="Email address"
-                className="contact-input w-full rounded-lg border border-input bg-background px-4 py-3.5 font-sans text-base text-foreground transition-[border-color,background-color] ease-in-out placeholder:text-muted-2 hover:border-black/[0.16] focus:border-black/[0.22] focus:outline-none dark:hover:border-white/[0.15] dark:focus:border-white/[0.18]"
+                className="w-full rounded-lg border border-input bg-background px-4 py-3.5 font-sans text-base text-foreground transition-[border-color,background-color] ease-in-out placeholder:text-muted-2 hover:border-black/[0.16] focus:border-black/[0.22] focus:outline-none dark:hover:border-white/[0.15] dark:focus:border-white/[0.18]"
                 name="email"
                 type="email"
                 placeholder="Email Address"
               />
               <textarea
                 aria-label="Message"
-                className="contact-input w-full resize-none rounded-lg border border-input bg-background px-4 py-3.5 font-sans text-base text-foreground transition-[border-color,background-color] ease-in-out placeholder:text-muted-2 hover:border-black/[0.16] focus:border-black/[0.22] focus:outline-none dark:hover:border-white/[0.15] dark:focus:border-white/[0.18]"
+                className="w-full resize-none rounded-lg border border-input bg-background px-4 py-3.5 font-sans text-base text-foreground transition-[border-color,background-color] ease-in-out placeholder:text-muted-2 hover:border-black/[0.16] focus:border-black/[0.22] focus:outline-none dark:hover:border-white/[0.15] dark:focus:border-white/[0.18]"
                 name="message"
                 rows={4}
                 placeholder="Your Message"
               />
               <button
                 type="submit"
-                className="contact-submit inline-flex w-full items-center justify-center gap-2 rounded-lg border border-input bg-background px-5 py-3.5 font-sans text-base font-medium text-foreground transition-[background-color,border-color] duration-200 ease-out hover:bg-accent disabled:cursor-not-allowed disabled:opacity-50"
+                className="inline-flex w-full items-center justify-center gap-2 rounded-lg border border-input bg-background px-5 py-3.5 font-sans text-base font-medium text-foreground transition-[background-color,border-color] duration-200 ease-out hover:bg-accent disabled:cursor-not-allowed disabled:opacity-50"
               >
                 Send Message <Send className="size-5" />
               </button>
@@ -130,8 +142,6 @@ export function ContactSection() {
             Buddha
           </figcaption>
         </figure>
-
-        <VisitorCount />
       </section>
     </Reveal>
   );

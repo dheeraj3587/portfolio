@@ -3,30 +3,34 @@
 @custom-variant dark (&:is(.dark *));
 
 :root {
-  --radius: 0.5rem;
+  --radius: 0.625rem;
   --background: #ffffff;
-  --foreground: #111111;
+  --foreground: #0a0a0a;
   --card: rgba(255, 255, 255, 0.72);
-  --card-foreground: #111111;
+  --card-foreground: #0a0a0a;
   --card-solid: #ffffff;
   --popover: #ffffff;
-  --popover-foreground: #111111;
-  --primary: #111111;
+  --popover-foreground: #0a0a0a;
+  --primary: #0a0a0a;
   --primary-foreground: #ffffff;
-  --secondary: #f8f8f8;
-  --secondary-foreground: #111111;
+  --secondary: #fafafa;
+  --secondary-foreground: #0a0a0a;
   --muted: #f4f4f4;
-  --muted-foreground: #484848;
-  --muted-2: #6b6b6b;
-  --accent: rgba(0, 0, 0, 0.04);
-  --accent-foreground: #111111;
+  --muted-foreground: #525252;
+  --muted-2: #737373;
+  --accent: rgba(0, 0, 0, 0.045);
+  --accent-foreground: #0a0a0a;
   --destructive: #dc2626;
-  --border: rgba(0, 0, 0, 0.12);
-  --input: rgba(0, 0, 0, 0.14);
+  --border: rgba(0, 0, 0, 0.08);
+  --border-strong: rgba(0, 0, 0, 0.12);
+  --input: rgba(0, 0, 0, 0.12);
   --ring: #8a8a8a;
-  --success: #34d399;
+  --success: #10b981;
+  --surface: #fafafa;
+  --surface-2: #f5f5f5;
   --expo-out: cubic-bezier(0.19, 1, 0.22, 1);
   --expo-in: cubic-bezier(0.95, 0.05, 0.795, 0.035);
+  --ease-spring: cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 @theme inline {
@@ -48,9 +52,12 @@
   --color-accent-foreground: var(--accent-foreground);
   --color-destructive: var(--destructive);
   --color-border: var(--border);
+  --color-border-strong: var(--border-strong);
   --color-input: var(--input);
   --color-ring: var(--ring);
   --color-success: var(--success);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
@@ -64,26 +71,30 @@
 }
 
 .dark {
-  --background: #070709;
-  --foreground: #f0f0f0;
-  --card: rgba(10, 10, 12, 0.7);
-  --card-foreground: #f0f0f0;
-  --card-solid: #09090b;
-  --popover: #111113;
-  --popover-foreground: #f0f0f0;
-  --primary: #f0f0f0;
-  --primary-foreground: #070709;
-  --secondary: #111113;
-  --secondary-foreground: #f0f0f0;
-  --muted: #151517;
-  --muted-foreground: #b2b2b2;
-  --muted-2: #a0a0a0;
-  --accent: rgba(255, 255, 255, 0.045);
-  --accent-foreground: #f0f0f0;
+  --background: #0a0a0b;
+  --foreground: #f4f4f5;
+  --card: rgba(15, 15, 17, 0.7);
+  --card-foreground: #f4f4f5;
+  --card-solid: #0d0d0f;
+  --popover: #131315;
+  --popover-foreground: #f4f4f5;
+  --primary: #f4f4f5;
+  --primary-foreground: #0a0a0b;
+  --secondary: #131315;
+  --secondary-foreground: #f4f4f5;
+  --muted: #18181b;
+  --muted-foreground: #a1a1aa;
+  --muted-2: #71717a;
+  --accent: rgba(255, 255, 255, 0.04);
+  --accent-foreground: #f4f4f5;
   --destructive: #ef4444;
-  --border: rgba(255, 255, 255, 0.09);
-  --input: rgba(255, 255, 255, 0.13);
-  --ring: #737373;
+  --border: rgba(255, 255, 255, 0.08);
+  --border-strong: rgba(255, 255, 255, 0.13);
+  --input: rgba(255, 255, 255, 0.12);
+  --ring: #71717a;
+  --success: #22c55e;
+  --surface: #0f0f11;
+  --surface-2: #131315;
 }
 
 * {
@@ -94,6 +105,7 @@
 html {
   scroll-behavior: smooth;
   overflow-y: scroll;
+  scroll-padding-top: 6rem;
 }
 
 body {
@@ -101,6 +113,8 @@ body {
   overflow-x: hidden;
   background: var(--background);
   color: var(--foreground);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
 }
 
 button,
@@ -120,7 +134,8 @@ button:not(:disabled),
 }
 
 ::-webkit-scrollbar {
-  width: 6px;
+  width: 8px;
+  height: 8px;
 }
 
 ::-webkit-scrollbar-track {
@@ -128,8 +143,12 @@ button:not(:disabled),
 }
 
 ::-webkit-scrollbar-thumb {
-  background: color-mix(in oklab, var(--foreground) 16%, transparent);
+  background: color-mix(in oklab, var(--foreground) 14%, transparent);
   border-radius: 999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: color-mix(in oklab, var(--foreground) 22%, transparent);
 }
 
 .contribution-scroll::-webkit-scrollbar {
@@ -141,29 +160,37 @@ button:not(:disabled),
   scrollbar-width: none;
 }
 
-.nav-fade {
-  mask-image: linear-gradient(to bottom, black 82%, transparent);
-}
-
+/* GPU-accelerated reveal — runs only when in view */
 .reveal {
-  animation: fade-up 500ms cubic-bezier(0.22, 1, 0.36, 1) both;
-  animation-delay: var(--delay, 0ms);
+  opacity: 0;
+  transform: translate3d(0, 16px, 0);
+  transition:
+    opacity 600ms var(--ease-spring),
+    transform 600ms var(--ease-spring);
+  transition-delay: var(--reveal-delay, 0ms);
   will-change: opacity, transform;
 }
 
+.reveal.is-visible {
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+}
+
+/* Subtle role rotator without layout thrash */
 .role-window {
-  height: 1.75rem;
+  height: 1.6rem;
   overflow: hidden;
 }
 
 .role-track {
   display: grid;
-  animation: role-slide 13s cubic-bezier(0.76, 0, 0.24, 1) infinite;
+  animation: role-slide 18s cubic-bezier(0.76, 0, 0.24, 1) infinite;
+  will-change: transform;
 }
 
 .role-track span {
-  height: 1.75rem;
-  line-height: 1.75rem;
+  height: 1.6rem;
+  line-height: 1.6rem;
 }
 
 .invert-on-dark {
@@ -182,51 +209,56 @@ button:not(:disabled),
   filter: none;
 }
 
-.socket-icon {
-  opacity: 0.6;
+/* Header gradient mask */
+.nav-fade {
+  -webkit-mask-image: linear-gradient(to bottom, black 70%, transparent);
+  mask-image: linear-gradient(to bottom, black 70%, transparent);
 }
 
-.dark .socket-icon {
-  filter: invert(1);
-  opacity: 0.9;
+/* Status pulse */
+@keyframes status-pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.85; transform: scale(1.06); }
 }
 
-@keyframes fade-up {
-  from {
-    opacity: 0;
-    transform: translateY(12px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+.status-dot {
+  animation: status-pulse 2.4s ease-in-out infinite;
+  will-change: transform, opacity;
 }
 
 @keyframes role-slide {
-  0%,
-  14% {
-    transform: translateY(0);
-  }
-  18%,
-  32% {
-    transform: translateY(-1.75rem);
-  }
-  36%,
-  50% {
-    transform: translateY(-3.5rem);
-  }
-  54%,
-  68% {
-    transform: translateY(-5.25rem);
-  }
-  72%,
-  86% {
-    transform: translateY(-7rem);
-  }
-  92%,
-  100% {
-    transform: translateY(-8.75rem);
-  }
+  0%, 14% { transform: translate3d(0, 0, 0); }
+  18%, 32% { transform: translate3d(0, -1.6rem, 0); }
+  36%, 50% { transform: translate3d(0, -3.2rem, 0); }
+  54%, 68% { transform: translate3d(0, -4.8rem, 0); }
+  72%, 86% { transform: translate3d(0, -6.4rem, 0); }
+  92%, 100% { transform: translate3d(0, -8rem, 0); }
+}
+
+/* Tech tile hover — uses transform only for 60fps */
+.tech-tile {
+  transition:
+    transform 200ms var(--ease-spring),
+    background-color 180ms ease-out,
+    border-color 180ms ease-out;
+  will-change: transform;
+}
+
+.tech-tile:hover {
+  transform: translate3d(0, -2px, 0);
+}
+
+/* Card hover */
+.card-hover {
+  transition:
+    transform 220ms var(--ease-spring),
+    border-color 220ms ease-out,
+    background-color 220ms ease-out;
+  will-change: transform;
+}
+
+.card-hover:hover {
+  transform: translate3d(0, -3px, 0);
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -235,8 +267,332 @@ button:not(:disabled),
   }
 
   .reveal,
-  .role-track {
-    animation: none;
+  .role-track,
+  .status-dot,
+  .tech-tile,
+  .card-hover {
+    animation: none !important;
+    transition: none !important;
+  }
+
+  .reveal {
+    opacity: 1;
+    transform: none;
   }
 }
 
+
+/* ScrollTextMotion — Codrops-style on-scroll typography */
+.scroll-text-motion {
+  font-family: ui-monospace, "SF Mono", "JetBrains Mono", Menlo, Consolas,
+    monospace;
+  text-transform: uppercase;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.scroll-text-el.el {
+  white-space: nowrap;
+  filter: blur(0);
+  opacity: 0.6;
+}
+
+.scroll-text-el.el--xl {
+  font-size: clamp(2rem, 20vw, 15rem);
+  opacity: 1;
+  font-family: ui-monospace, "SF Mono", "JetBrains Mono", Menlo, Consolas,
+    monospace;
+  font-weight: 400;
+  letter-spacing: -0.02em;
+}
+
+.scroll-text-logo {
+  font-family: ui-monospace, "SF Mono", "JetBrains Mono", Menlo, Consolas,
+    monospace;
+  letter-spacing: -0.02em;
+  transform-origin: 50% 50%;
+}
+
+.scroll-text-el.pos-1 {
+  /* default */
+}
+.scroll-text-el.pos-2 {
+  margin-left: 25vw;
+}
+.scroll-text-el.pos-3 {
+  margin-left: 70vw;
+}
+.scroll-text-el.pos-4 {
+  margin-left: auto;
+}
+.scroll-text-el.pos-5 {
+  margin-top: 200px;
+  opacity: 1;
+}
+.scroll-text-el.pos-6 {
+  margin-left: auto;
+  margin-top: 200px;
+  opacity: 1;
+}
+.scroll-text-el.pos-7 {
+  margin-top: 200px;
+  opacity: 1;
+  filter: blur(1.2px);
+}
+.scroll-text-el.pos-8 {
+  margin-left: 25vw;
+  margin-top: 50px;
+  opacity: 1;
+  filter: blur(2px);
+}
+.scroll-text-el.pos-9 {
+  margin-left: 25vw;
+  margin-top: 250px;
+}
+.scroll-text-el.pos-10 {
+  margin-left: 70vw;
+  margin-top: 40vh;
+}
+
+@keyframes blink-cursor {
+  from,
+  to {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
+}
+
+.scroll-text-el.typing-indicator {
+  display: inline-block;
+  animation: blink-cursor 0.7s linear infinite;
+}
+
+/* Intro host — the first-visit animation surface.
+ *
+ * The intro and portfolio are mounted simultaneously; the intro sits on
+ * top with z-index 100 and owns the scroll. During the outro phase, GSAP
+ * morphs the centered logo onto the portfolio's hero name, then dissolves
+ * the host so the portfolio (revealed by [data-intro-active='outro'])
+ * becomes the active surface.
+ */
+.intro-host {
+  position: relative;
+  z-index: 100;
+  background: #000;
+  color: #fff;
+  /* IMPORTANT: do not put `will-change: transform` here. It would create a
+     containing block for the descendant `.scroll-text-fixed` element and
+     break its `position: fixed` so the centered logo would no longer be
+     viewport-anchored. We only enable will-change during the outro, where
+     transforms actually run. */
+}
+
+.intro-host[data-phase="outro"] {
+  pointer-events: none;
+  will-change: opacity, transform, background-color;
+  transform-origin: 50% 50%;
+}
+
+/* Hide the portfolio while the intro is active so it doesn't briefly
+   flicker into view before we're ready to reveal it. */
+[data-portfolio-under-intro] {
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  overflow: hidden;
+  opacity: 0;
+  pointer-events: none;
+  transform: scale(1.04);
+  filter: blur(6px);
+  transition: opacity 700ms cubic-bezier(0.22, 1, 0.36, 1),
+    transform 900ms cubic-bezier(0.22, 1, 0.36, 1),
+    filter 700ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* When the outro fires, ease the portfolio in from a slight zoom + blur. */
+html[data-intro-active="outro"] [data-portfolio-under-intro] {
+  opacity: 1;
+  transform: scale(1);
+  filter: blur(0);
+}
+
+/* Once the intro has finished and unmounted, restore normal layout for
+   the portfolio (no longer position-fixed). */
+html[data-intro-active="done"] [data-portfolio-under-intro],
+[data-portfolio-under-intro]:where(html:not([data-intro-active])) {
+  position: static;
+  opacity: 1;
+  transform: none;
+  filter: none;
+  pointer-events: auto;
+  overflow: visible;
+}
+
+/* Skip intro pill */
+.intro-skip {
+  position: fixed;
+  right: 1.25rem;
+  bottom: 1.25rem;
+  z-index: 110;
+  padding: 0.5rem 1rem;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  background: rgba(255, 255, 255, 0.04);
+  color: rgba(255, 255, 255, 0.7);
+  font-family: ui-monospace, "SF Mono", "JetBrains Mono", Menlo, Consolas,
+    monospace;
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  backdrop-filter: blur(8px);
+  cursor: pointer;
+  transition: color 200ms ease, border-color 200ms ease, background 200ms ease;
+}
+
+.intro-skip:hover {
+  color: #fff;
+  border-color: rgba(255, 255, 255, 0.35);
+  background: rgba(255, 255, 255, 0.08);
+}
+
+/* Bottom hint while in the intro */
+.intro-hint {
+  position: fixed;
+  left: 50%;
+  bottom: 1.5rem;
+  z-index: 105;
+  transform: translateX(-50%);
+  font-family: ui-monospace, "SF Mono", "JetBrains Mono", Menlo, Consolas,
+    monospace;
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  color: rgba(255, 255, 255, 0.55);
+  text-transform: uppercase;
+  pointer-events: none;
+  animation: intro-hint-bob 2.4s ease-in-out infinite;
+}
+
+@keyframes intro-hint-bob {
+  0%, 100% { transform: translate(-50%, 0); opacity: 0.55; }
+  50% { transform: translate(-50%, 6px); opacity: 0.85; }
+}
+
+
+/* ── DeviceFrame: scope a forced colour scheme inside the phone screen ──
+ *
+ * The portfolio is in dark mode but our in-phone iOS UI should always look
+ * bright and clean (real iOS apps render against a white background). We
+ * neutralise the global `.dark` selector by stripping the class influence
+ * inside `[data-device-screen]` and providing fresh tokens.
+ */
+[data-device-screen].device-screen-light {
+  color-scheme: light;
+  --background: #ffffff;
+  --foreground: #0a0a0b;
+  --muted: #f4f4f5;
+  --muted-foreground: #71717a;
+  --border: rgba(0, 0, 0, 0.08);
+  background: #ffffff;
+  color: #0a0a0b;
+}
+
+[data-device-screen].device-screen-light * {
+  /* Make sure descendants pick up the forced light tokens. */
+  --tw-ring-offset-color: #ffffff;
+}
+
+[data-device-screen].device-screen-dark {
+  color-scheme: dark;
+  --background: #0a0a0b;
+  --foreground: #f4f4f5;
+  --muted: #18181b;
+  --muted-foreground: #a1a1aa;
+  --border: rgba(255, 255, 255, 0.08);
+  background: #0a0a0b;
+  color: #f4f4f5;
+}
+
+/* iOS-flavoured typography for the phone screen. SF-style stack with
+   tighter tracking + system smoothing. */
+[data-device-screen] {
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro",
+    "Helvetica Neue", Helvetica, Arial, sans-serif;
+  letter-spacing: -0.01em;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+
+/* ── Liquid Glass — iOS 26-inspired material ──
+ *
+ * Used for floating navigation bars, FABs, and pill buttons inside the
+ * phone screen preview. The look is built from:
+ *   • a subtle translucent fill (8-14% white over light, 12% over dark)
+ *   • a heavy backdrop blur (compositor-accelerated GPU layer)
+ *   • saturation boost to keep colour vibrancy under the blur
+ *   • inset 1px highlight to catch ambient light
+ *   • soft drop-shadow for depth
+ *
+ * GPU acceleration: `backdrop-filter` is composited on a separate layer in
+ * Chromium / Safari / Firefox 103+ — the promotion is automatic when the
+ * filter is in use. We add `transform: translateZ(0)` on parents (in
+ * device-frame.tsx) to ensure the compositor has a clean layer to filter
+ * against, which avoids the no-blur fallback some browsers fall into.
+ */
+.liquid-glass {
+  backdrop-filter: blur(22px) saturate(180%);
+  -webkit-backdrop-filter: blur(22px) saturate(180%);
+  background: rgba(255, 255, 255, 0.65);
+  border: 1px solid rgba(255, 255, 255, 0.55);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.85),
+    0 1px 0 rgba(0, 0, 0, 0.04),
+    0 8px 24px -10px rgba(15, 23, 42, 0.18);
+}
+
+.liquid-glass-strong {
+  backdrop-filter: blur(28px) saturate(200%);
+  -webkit-backdrop-filter: blur(28px) saturate(200%);
+  background: rgba(255, 255, 255, 0.55);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.9),
+    0 12px 32px -8px rgba(15, 23, 42, 0.22);
+}
+
+.liquid-glass-dark {
+  backdrop-filter: blur(22px) saturate(160%);
+  -webkit-backdrop-filter: blur(22px) saturate(160%);
+  background: rgba(20, 20, 22, 0.55);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.05),
+    0 12px 32px -8px rgba(0, 0, 0, 0.5);
+}
+
+/* Liquid blue — iOS primary action variant. */
+.liquid-blue {
+  background: linear-gradient(
+    180deg,
+    rgba(72, 145, 255, 0.95) 0%,
+    rgba(0, 122, 255, 0.95) 100%
+  );
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.35),
+    0 4px 12px -2px rgba(0, 122, 255, 0.45);
+}
+
+/* Fallback for browsers that don't support backdrop-filter (Firefox<103) */
+@supports not (
+  (backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))
+) {
+  .liquid-glass,
+  .liquid-glass-strong {
+    background: rgba(255, 255, 255, 0.92);
+  }
+  .liquid-glass-dark {
+    background: rgba(20, 20, 22, 0.9);
+  }
+}

@@ -1,12 +1,15 @@
-import { Mail, X } from "lucide-react";
+import { Mail } from "lucide-react";
 import { footerLinks, profile, socialLinks } from "@/lib/portfolio-data";
-import { GitHubIcon } from "./tech-icon";
+import { GitHubIcon, LinkedInIcon } from "./brand-icons";
+
+const SOCIAL_LINK_CLASS =
+  "text-muted-2 transition-colors duration-150 hover:text-foreground";
 
 export function SiteFooter() {
   return (
     <footer className="mt-16 flex flex-col gap-8 border-t border-border py-12 text-sm text-muted-2 sm:mt-24 sm:text-base md:flex-row md:items-center md:justify-between">
       <div className="flex flex-wrap items-center gap-6 font-sans">
-        <p>© 2026 {profile.name}.</p>
+        <p>© 2026 {profile.shortName}.</p>
         {footerLinks.map((link) => (
           <a
             key={link.href}
@@ -19,18 +22,18 @@ export function SiteFooter() {
       </div>
       <div className="flex items-center gap-4">
         <a
-          aria-label="X profile"
-          href={socialLinks.x}
+          aria-label="LinkedIn profile"
+          href={socialLinks.linkedin}
           target="_blank"
           rel="noreferrer"
-          className="text-[#737373] transition-colors duration-150 hover:text-[#111111] dark:text-[#a0a0a0] dark:hover:text-[#f0f0f0]"
+          className={SOCIAL_LINK_CLASS}
         >
-          <X className="size-6" />
+          <LinkedInIcon className="size-6" />
         </a>
         <a
           aria-label="Email"
           href={socialLinks.email}
-          className="text-[#737373] transition-colors duration-150 hover:text-[#111111] dark:text-[#a0a0a0] dark:hover:text-[#f0f0f0]"
+          className={SOCIAL_LINK_CLASS}
         >
           <Mail className="size-6" />
         </a>
@@ -39,9 +42,9 @@ export function SiteFooter() {
           href={socialLinks.github}
           target="_blank"
           rel="noreferrer"
-          className="text-[#737373] transition-colors duration-150 hover:text-[#111111] dark:text-[#a0a0a0] dark:hover:text-[#f0f0f0]"
+          className={SOCIAL_LINK_CLASS}
         >
-          <GitHubIcon />
+          <GitHubIcon className="size-6" />
         </a>
       </div>
     </footer>

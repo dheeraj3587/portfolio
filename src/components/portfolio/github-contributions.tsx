@@ -30,6 +30,14 @@ export function GitHubContributions({
 }) {
   const data = use(contributions);
 
+  if (!data || data.length === 0) {
+    return (
+      <div className="flex h-32 w-full items-center justify-center px-6 font-mono text-[11px] uppercase tracking-[0.2em] text-muted-2 sm:px-8">
+        Contributions are taking a coffee break.
+      </div>
+    );
+  }
+
   return (
     <TooltipProvider delayDuration={0} disableHoverableContent>
       <ContributionGraph
@@ -48,7 +56,7 @@ export function GitHubContributions({
         }}
       >
         <ContributionGraphCalendar
-          className="contribution-scroll px-2"
+          className="contribution-scroll px-6 sm:px-8"
           title="GitHub Contributions"
         >
           {({ activity, dayIndex, weekIndex }) => (
@@ -72,15 +80,15 @@ export function GitHubContributions({
             </Tooltip>
           )}
         </ContributionGraphCalendar>
-        <ContributionGraphFooter className="px-2 mt-3 flex items-center justify-between text-[11px] font-mono tracking-[0.2em] uppercase text-neutral-400 dark:text-neutral-500">
+        <ContributionGraphFooter className="mt-3 flex items-center justify-between px-6 font-mono text-[11px] uppercase tracking-[0.2em] text-neutral-400 sm:px-8 dark:text-neutral-500">
           <ContributionGraphTotalCount>
             {({ totalCount, year }) => (
-              <div className="font-semibold text-[#111111]/80 dark:text-white/80">
+              <div className="font-semibold text-foreground/85">
                 {totalCount} CONTRIBUTIONS · {year}–{(year + 1).toString().slice(-2)}
               </div>
             )}
           </ContributionGraphTotalCount>
-          <ContributionGraphLegend className="text-[11px] font-mono tracking-[0.2em] uppercase text-neutral-400 dark:text-neutral-500" />
+          <ContributionGraphLegend className="font-mono text-[11px] uppercase tracking-[0.2em] text-neutral-400 dark:text-neutral-500" />
         </ContributionGraphFooter>
       </ContributionGraph>
     </TooltipProvider>

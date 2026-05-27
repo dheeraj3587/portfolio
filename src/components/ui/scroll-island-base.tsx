@@ -97,7 +97,7 @@ export function ScrollIsland({
         }}
       >
         <div
-          className="theme-injected pointer-events-none fixed top-72 z-[9999] flex justify-center pt-6 sm:top-32"
+          className="theme-injected pointer-events-none fixed top-4 z-[9999] flex justify-center sm:top-5"
           style={{
             left: 0,
             width: "100%",
@@ -117,8 +117,11 @@ export function ScrollIsland({
             }}
           >
             <div ref={ref} className={cn("flex w-full flex-col items-center px-4")}> 
-              <div
-                className="group flex h-[3.25rem] w-full cursor-pointer select-none items-center justify-between gap-8"
+              <button
+                type="button"
+                aria-expanded={isOpen}
+                aria-label={isOpen ? "Close section index" : "Open section index"}
+                className="group flex h-[3.25rem] w-full cursor-pointer select-none items-center justify-between gap-8 bg-transparent text-left"
                 onClick={() => setIsOpen(!isOpen)}
               >
                 <div className="flex items-center gap-2">
@@ -153,7 +156,7 @@ export function ScrollIsland({
                 >
                   {Math.round(scrollProgress)}%
                 </motion.div>
-              </div>
+              </button>
 
               <AnimatePresence mode="popLayout">
                 {isOpen && (

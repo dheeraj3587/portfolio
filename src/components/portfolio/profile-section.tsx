@@ -1,5 +1,5 @@
 import { Suspense } from "react";
-import { Globe2, Mail, MapPin, UserRound, X } from "lucide-react";
+import { Globe2, Mail, MapPin, UserRound } from "lucide-react";
 import {
   AvatarFallback,
   LiquidMetalAvatar,
@@ -10,30 +10,36 @@ import {
 } from "@/components/portfolio/github-contributions";
 import { getCachedContributions } from "@/lib/get-cached-contributions";
 import { profile, socialLinks, techStack } from "@/lib/portfolio-data";
-import { Info } from "./info";
 import { Reveal } from "./reveal";
 import { SectionLabel } from "./section-label";
-import { GitHubIcon, TechIcon } from "./tech-icon";
+import { GitHubIcon, LinkedInIcon } from "./brand-icons";
+import { TechIcon } from "./tech-icon";
 
 export function ProfileSection() {
   const contributions = getCachedContributions(profile.githubUsername);
 
   return (
     <section id="home">
+
+      {/* ── 1. Avatar + Name + Role ── */}
       <Reveal>
-        <div className="mb-8 flex items-center gap-5">
+        <div className="mb-10 flex items-center gap-5">
           <LiquidMetalAvatar
             size="lg"
-            className="size-18 sm:size-20"
+            className="size-[4.5rem] shrink-0 sm:size-20"
             aria-label={profile.name}
           >
             <AvatarFallback className="rounded-full bg-gradient-to-br from-zinc-100 to-zinc-200 text-2xl font-semibold tracking-tight text-zinc-600 dark:from-zinc-800 dark:to-zinc-900 dark:text-zinc-300">
               {profile.initials}
             </AvatarFallback>
           </LiquidMetalAvatar>
-          <div className="min-w-0 flex-1">
-            <h1 className="font-sans text-4xl font-semibold leading-tight tracking-tight text-foreground sm:text-5xl md:text-[3rem]">
-              {profile.name}
+
+          <div className="min-w-0">
+            <h1
+              data-morph-target="hero-name"
+              className="font-sans text-4xl font-semibold leading-tight tracking-tight text-foreground sm:text-5xl md:text-[3rem]"
+            >
+              {profile.shortName}
             </h1>
             <div className="role-window mt-1.5 font-sans text-base font-medium text-muted-2 sm:text-lg">
               <div className="role-track">
@@ -46,155 +52,220 @@ export function ProfileSection() {
         </div>
       </Reveal>
 
+      {/* ── 2. LOCATION / EMAIL / PRONOUNS — three columns ── */}
       <Reveal delay={80}>
-        <div className="mb-10 mt-14 flex flex-wrap items-start gap-x-12 gap-y-6">
-          <Info
+        <div className="mb-10 flex flex-wrap gap-x-12 gap-y-5 sm:gap-x-16">
+          <MetaCol
             label="Location"
-            icon={<MapPin className="size-4" />}
+            icon={<MapPin className="size-[15px]" />}
             value={profile.location}
           />
-          <Info
+          <MetaCol
             label="Email"
-            icon={<Mail className="size-4" />}
+            icon={<Mail className="size-[15px]" />}
             value={profile.email}
+            href={socialLinks.email}
           />
-          <Info
+          <MetaCol
             label="Pronouns"
-            icon={<UserRound className="size-4" />}
+            icon={<UserRound className="size-[15px]" />}
             value={profile.pronouns}
           />
         </div>
       </Reveal>
 
+      {/* ── 3. Bio ── */}
       <Reveal delay={140}>
-        <div
+        <p
           id="about"
-          className="mb-12 font-sans text-base font-[450] leading-[1.85] text-muted-foreground sm:text-lg"
+          className="mb-10 scroll-mt-32 font-sans text-base font-[450] leading-[1.85] text-muted-foreground sm:text-lg"
         >
-          <p>
-            I build Android apps end-to-end, obsessing over the details that
-            make mobile experiences feel right to use. Currently working with{" "}
-            <a
-              className="text-foreground underline-offset-2 hover:underline"
-              href="https://kotlinlang.org/"
-              target="_blank"
-              rel="noreferrer"
-            >
-              Kotlin
-            </a>
-            ,{" "}
-            <a
-              className="text-foreground underline-offset-2 hover:underline"
-              href="https://dev.java/"
-              target="_blank"
-              rel="noreferrer"
-            >
-              Java
-            </a>
-            ,{" "}
-            <a
-              className="text-foreground underline-offset-2 hover:underline"
-              href="https://developer.android.com/jetpack/compose"
-              target="_blank"
-              rel="noreferrer"
-            >
-              Jetpack Compose
-            </a>
-            , and{" "}
-            <a
-              className="text-foreground underline-offset-2 hover:underline"
-              href="https://firebase.google.com/"
-              target="_blank"
-              rel="noreferrer"
-            >
-              Firebase
-            </a>
-            .
-          </p>
-        </div>
-      </Reveal>
-
-      <Reveal delay={200}>
-        <div className="mb-10 flex h-7 items-center gap-3 font-sans text-sm text-muted-foreground sm:text-base">
-          <SpotifyIcon />
-          <span className="font-medium text-foreground">Last played</span>
-          <span className="text-muted-2">—</span>
-          <span>bad guy · Billie Eilish</span>
-        </div>
-      </Reveal>
-
-      <Reveal delay={240}>
-        <div className="mb-8 flex flex-wrap items-center gap-5 text-muted-2">
+          I build Android apps and backend services end-to-end, obsessing over
+          the details that make software feel right to use. Currently working
+          with{" "}
           <a
-            aria-label="X profile"
-            href={socialLinks.x}
+            className="text-foreground underline-offset-2 hover:underline"
+            href="https://kotlinlang.org/"
             target="_blank"
             rel="noreferrer"
-            className="text-[#737373] transition-colors duration-150 hover:text-[#111111] dark:text-[#a0a0a0] dark:hover:text-[#f0f0f0]"
           >
-            <X className="size-6" />
+            Kotlin
           </a>
+          ,{" "}
+          <a
+            className="text-foreground underline-offset-2 hover:underline"
+            href="https://developer.android.com/jetpack/compose"
+            target="_blank"
+            rel="noreferrer"
+          >
+            Jetpack Compose
+          </a>
+          ,{" "}
+          <a
+            className="text-foreground underline-offset-2 hover:underline"
+            href="https://spring.io/projects/spring-boot"
+            target="_blank"
+            rel="noreferrer"
+          >
+            Spring Boot
+          </a>
+          , and{" "}
+          <a
+            className="text-foreground underline-offset-2 hover:underline"
+            href="https://www.postgresql.org/"
+            target="_blank"
+            rel="noreferrer"
+          >
+            PostgreSQL
+          </a>
+          .
+        </p>
+      </Reveal>
+
+      {/* ── 4. DSA stats line ── */}
+      <Reveal delay={200}>
+        <div className="mb-8 flex items-center gap-3 font-sans text-sm text-muted-foreground sm:text-base">
+          <CodeIcon />
+          <span className="font-medium text-foreground">500+ DSA solved</span>
+          <span className="text-muted-2">—</span>
+          <a
+            href={socialLinks.leetcode}
+            target="_blank"
+            rel="noreferrer"
+            className="hover:text-foreground"
+          >
+            LeetCode · @Dheeraj031224
+          </a>
+          <span className="hidden text-muted-2 sm:inline">·</span>
+          <a
+            href={socialLinks.codeforces}
+            target="_blank"
+            rel="noreferrer"
+            className="hidden hover:text-foreground sm:inline"
+          >
+            Codeforces · @joshidheeraj8782
+          </a>
+        </div>
+      </Reveal>
+
+      {/* ── 5. Social icons ── */}
+      <Reveal delay={240}>
+        <div className="mb-8 flex items-center gap-5">
           <a
             aria-label="GitHub profile"
             href={socialLinks.github}
             target="_blank"
             rel="noreferrer"
-            className="text-[#737373] transition-colors duration-150 hover:text-[#111111] dark:text-[#a0a0a0] dark:hover:text-[#f0f0f0]"
+            className="text-muted-2 transition-colors duration-150 hover:text-foreground"
           >
-            <GitHubIcon />
+            <GitHubIcon className="size-6" />
           </a>
           <a
-            aria-label="Website"
-            href={socialLinks.website}
+            aria-label="LinkedIn profile"
+            href={socialLinks.linkedin}
             target="_blank"
             rel="noreferrer"
-            className="text-[#737373] transition-colors duration-150 hover:text-[#111111] dark:text-[#a0a0a0] dark:hover:text-[#f0f0f0]"
+            className="text-muted-2 transition-colors duration-150 hover:text-foreground"
+          >
+            <LinkedInIcon className="size-6" />
+          </a>
+          <a
+            aria-label="LeetCode profile"
+            href={socialLinks.leetcode}
+            target="_blank"
+            rel="noreferrer"
+            className="text-muted-2 transition-colors duration-150 hover:text-foreground"
           >
             <Globe2 className="size-6" />
           </a>
           <a
             aria-label="Email"
             href={socialLinks.email}
-            className="text-[#737373] transition-colors duration-150 hover:text-[#111111] dark:text-[#a0a0a0] dark:hover:text-[#f0f0f0]"
+            className="text-muted-2 transition-colors duration-150 hover:text-foreground"
           >
             <Mail className="size-6" />
           </a>
         </div>
       </Reveal>
 
+      {/* ── GitHub contributions ── */}
       <Reveal delay={300}>
-        <div className="-mx-8 mt-12 sm:mx-0">
+        <div className="-mx-6 mt-12 sm:-mx-10 lg:-mx-12">
           <Suspense fallback={<GitHubContributionsFallback />}>
-            <GitHubContributions
-              contributions={contributions}
-            />
+            <GitHubContributions contributions={contributions} />
           </Suspense>
         </div>
       </Reveal>
 
+      {/* ── Tech Stack ── */}
       <Reveal delay={360} className="mt-16">
-        <section id="components">
+        <div id="components">
           <SectionLabel>Tech Stack</SectionLabel>
-          <div className="flex flex-wrap items-center gap-5 opacity-95 sm:gap-6">
+          <div className="flex flex-wrap items-center gap-x-6 gap-y-6 sm:gap-x-7">
             {techStack.map((tech) => (
               <TechIcon key={tech.id} id={tech.id} />
             ))}
           </div>
-        </section>
+        </div>
       </Reveal>
     </section>
   );
 }
 
-function SpotifyIcon() {
+/** Three-column meta item: label on top, icon + value below */
+function MetaCol({
+  label,
+  icon,
+  value,
+  href,
+}: {
+  label: string;
+  icon: React.ReactNode;
+  value: string;
+  href?: string;
+}) {
+  const valueNode = (
+    <div className="flex items-center gap-2 font-sans text-base font-medium text-muted-foreground sm:text-lg">
+      <span className="text-muted-2">{icon}</span>
+      {value}
+    </div>
+  );
+
+  return (
+    <div className="space-y-1">
+      <p className="font-sans text-xs font-medium uppercase tracking-[0.14em] text-muted-2 sm:text-[13px]">
+        {label}
+      </p>
+      {href ? (
+        <a
+          href={href}
+          target={href.startsWith("http") ? "_blank" : undefined}
+          rel={href.startsWith("http") ? "noreferrer" : undefined}
+          className="transition-opacity hover:opacity-70"
+        >
+          {valueNode}
+        </a>
+      ) : (
+        valueNode
+      )}
+    </div>
+  );
+}
+
+function CodeIcon() {
   return (
     <svg
       aria-hidden="true"
-      className="size-5 shrink-0 text-[#1db954]"
+      className="size-5 shrink-0 text-emerald-500"
       viewBox="0 0 24 24"
-      fill="currentColor"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
     >
-      <path d="M12 1.75A10.25 10.25 0 1 0 12 22.25 10.25 10.25 0 0 0 12 1.75Zm4.7 14.78a.76.76 0 0 1-1.05.25c-2.87-1.75-6.48-2.15-10.74-1.18a.76.76 0 1 1-.34-1.48c4.66-1.06 8.66-.6 11.88 1.36.36.22.47.69.25 1.05Zm1.25-2.78a.94.94 0 0 1-1.29.31c-3.28-2.02-8.28-2.6-12.16-1.42a.94.94 0 1 1-.55-1.8c4.43-1.35 9.93-.7 13.69 1.6.44.27.58.86.31 1.31Zm.11-2.9c-3.93-2.33-10.42-2.55-14.18-1.41a1.13 1.13 0 0 1-.66-2.17c4.32-1.31 11.48-1.05 16 1.63a1.13 1.13 0 0 1-1.16 1.95Z" />
+      <polyline points="16 18 22 12 16 6" />
+      <polyline points="8 6 2 12 8 18" />
     </svg>
   );
 }
