@@ -13,13 +13,17 @@ import { projects, techById } from "@/lib/portfolio-data";
  * value to `<IPhoneFrame />`. The frame in turn writes the resolved value
  * onto the `--device-screen-bg` custom property on `[data-device-screen]`.
  *
- * For each shipped project (`chime` and `crm`) we render the showcase,
- * locate the screen container, and assert that its
+ * For each shipped project (`chime` and `lumen`) we render the
+ * showcase, locate the screen container, and assert that its
  * `--device-screen-bg` matches the active (first) screen's expected hex.
  * This pins down Requirement 5.3 — the showcase must pass an explicit
  * `screenBackground` value to `IPhoneFrame` that matches the active
  * screen's background, so the strip and the screen content always paint
  * the same colour.
+ *
+ * The registry now stores a `PhoneScreenProjectEntry` per project (an
+ * envelope of `{ screens, autoAdvance }`), so reads go through
+ * `phoneScreensByProject[projectId]?.screens[0]`.
  *
  * `ProjectShowcase` renders through `createPortal(overlay, document.body)`,
  * so the rendered tree is not inside the container returned by
@@ -36,7 +40,7 @@ describe("ProjectShowcase — forwards active screen background to IPhoneFrame",
 
   const cases = [
     { projectId: "chime" as const },
-    { projectId: "crm" as const },
+    { projectId: "lumen" as const },
   ];
 
   for (const { projectId } of cases) {
@@ -45,8 +49,8 @@ describe("ProjectShowcase — forwards active screen background to IPhoneFrame",
       expect(project, `expected a project with id="${projectId}"`).toBeDefined();
       if (!project) return;
 
-      const screens = phoneScreensByProject[projectId] ?? [];
-      const expectedBackground = screens[0]?.screenBackground;
+      const entry = phoneScreensByProject[projectId];
+      const expectedBackground = entry?.screens[0]?.screenBackground;
       expect(
         expectedBackground,
         `expected an active screen with a screenBackground for "${projectId}"`,

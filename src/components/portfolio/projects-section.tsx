@@ -110,9 +110,14 @@ function ProjectCard({
             style={{ background: highlight }}
           />
 
-          {/* Card image */}
+          {/* Card image. Lumen's cover is a portrait composition, so we
+              use `object-contain` against the screen background to keep
+              the orb + greeting visible. Other projects keep `object-cover`. */}
           <motion.div
             className="relative aspect-video w-full overflow-hidden border-b border-border bg-muted"
+            style={
+              project.id === "lumen" ? { background: "#f8f6f2" } : undefined
+            }
             animate={{ opacity: isActive ? 0 : 1 }}
             transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
           >
@@ -121,7 +126,9 @@ function ProjectCard({
               alt={`${project.title} preview`}
               fill
               sizes="(max-width: 768px) 100vw, 384px"
-              className="object-cover transition-transform duration-500 ease-out group-hover:scale-[1.04]"
+              className={`transition-transform duration-500 ease-out group-hover:scale-[1.04] ${
+                project.id === "lumen" ? "object-contain" : "object-cover"
+              }`}
             />
             <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/15 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
           </motion.div>

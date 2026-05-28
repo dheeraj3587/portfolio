@@ -111,37 +111,47 @@ const projectOnlyTech: TechItem[] = [
   { id: "figma", name: "Figma", src: "/icons/tech/figma.svg" },
   { id: "spring-boot", name: "Spring Boot", src: "/icons/tech/java.svg" },
   { id: "jwt", name: "JWT", src: "/icons/tech/rest-api.svg" },
+  { id: "ai", name: "AI", src: "/icons/tech/ai.svg" },
+  { id: "react", name: "React", src: "/icons/tech/react.svg" },
 ];
 
 export const techById = new Map(
   [...techStack, ...projectOnlyTech].map((tech) => [tech.id, tech]),
 );
 
-export const projects = [
+export type Project = {
+  id: string;
+  title: string;
+  subtitle: string;
+  description: string;
+  image: string;
+  links: { github?: string; site?: string };
+  stack: string[];
+};
+
+export const projects: Project[] = [
   {
     id: "chime",
     title: "Chime (Voxa)",
     subtitle: "Real-Time Chat App",
     description:
       "Real-time 1:1 chat with live message delivery, read receipts, typing indicators, online presence, and FCM push notifications. Built with Jetpack Compose, Hilt DI, and the repository pattern.",
-    image: "/images/projects/preview_1.webp",
+    image:
+      "https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?q=80&w=1200&auto=format&fit=crop",
     links: {
       github: "https://github.com/dheeraj3587/Chime",
     },
     stack: ["kotlin", "jetpack-compose", "firebase", "hilt", "mvvm"],
   },
   {
-    id: "crm",
-    title: "Lead Management CRM",
-    subtitle: "Enterprise Backend",
+    id: "lumen",
+    title: "Lumen",
+    subtitle: "AI Creative Assistant",
     description:
-      "Spring Boot CRM with full CRUD, pipeline tracking, and stateless JWT auth via custom filter. Service-layer RBAC, normalized PostgreSQL schema with indexed FKs, and DTO-driven API responses.",
-    image: "/images/projects/preview_2.webp",
-    links: {
-      site: "https://lead-dheeraj3587s-projects.vercel.app",
-      github: "https://github.com/dheeraj3587",
-    },
-    stack: ["java", "spring-boot", "postgresql", "jwt"],
+      "Concept ideation for fashion and motion photographers — generate moodboards, hooks, and shot lists from a one-line prompt. Native Android app built with Kotlin and Jetpack Compose, featuring a custom liquid-metal hero animation.",
+    image: "/images/projects/lumen-cover.png",
+    links: { github: "https://github.com/dheeraj3587/lumen" },
+    stack: ["kotlin", "jetpack-compose", "android", "ai"],
   },
 ];
 

@@ -131,7 +131,7 @@ INTRO_GROUPS.push(
     items: [
       { text: "Built Chime", pos: "pos-3", altPos: "pos-8" },
       { text: "Built SplitRight", pos: "pos-3", altPos: "pos-8" },
-      { text: "Built Lead CRM", pos: "pos-3", altPos: "pos-8" },
+      { text: "Built Lumen", pos: "pos-3", altPos: "pos-8" },
       { text: "Reviewed AI code", pos: "pos-3", altPos: "pos-8" },
       { text: "Outlier AI", pos: "pos-3", altPos: "pos-8" },
       { text: "7+ months", pos: "pos-3", altPos: "pos-8" },
