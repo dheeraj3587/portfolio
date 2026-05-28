@@ -60,7 +60,7 @@ The overhaul targets three distinct visitors, in priority order:
 1. WHEN the `Hero_Section` first paints on a viewport at least 768px wide, THE `Portfolio_Site` SHALL render at least one `Phone_Frame` element within the initial above-the-fold area.
 2. THE `Portfolio_Site` SHALL apply a single coherent motion language across `Hero_Section`, `Projects`, `Experience_Timeline`, and `Contact_Section`, defined by a shared spring-curve preset whose stiffness, damping, and mass values are exported from one module and consumed by every animated component.
 3. THE `Portfolio_Site` SHALL surface at least three identifiably mobile-native UI motifs from the following set across the visible page: Android 16-style status-bar chrome, Material ripple-on-press, container-transform, bottom-sheet behavior, FAB-style floating action.
-4. WHEN any primary interactive surface (`Project_Card`, primary CTA in `Contact_Section`, `Tech_Stack_Grid` icon, `Scroll_Island_Nav` action, `Palette_Swatcher` swatch) is pressed via mouse or touch, THE `Portfolio_Site` SHALL render a Material-style ripple that originates from the press coordinates and decays within 600ms.
+4. WHEN any primary interactive surface (`Project_Card`, primary CTA in `Contact_Section`, `Tech_Stack_Grid` icon, `Scroll_Island_Nav` action, `Palette_Swatcher` swatch) is pressed via mouse or touch, THE `Portfolio_Site` SHALL render a Material-style ripple that originates from the press coordinates and decays within 600ms, except WHERE the user's connection is reported as `2g` or `3g` via `navigator.connection.effectiveType`, in which case the ripple SHALL decay within 800ms.
 5. WHERE the user's pointer is `coarse` (touch), THE `Portfolio_Site` SHALL substitute press feedback for hover-only effects so that no interaction depends on hover to reveal critical content.
 
 ### Requirement 2: Hero Section Motion and Identity
@@ -90,8 +90,7 @@ The overhaul targets three distinct visitors, in priority order:
 6. WHEN the user clicks or taps the `Phone_Frame` of the `Device_Showcase` for a given project, THE `Portfolio_Site` SHALL open the corresponding `Project_Showcase` for that project.
 7. WHILE the viewport is narrower than 768px, THE `Device_Showcase` SHALL switch from scroll-driven scrubbing to a horizontal swipeable carousel of the same screens, supporting both touch swipe and on-screen pagination dots.
 8. IF `Reduced_Motion_State` is active, THEN THE `Device_Showcase` SHALL render a static `Phone_Frame` showing one representative screen per project with on-frame pagination controls and SHALL NOT bind to scroll progress.
-9. WHERE `Reduced_Motion_State` is inactive AND the viewport is at least 768px wide, THE `Device_Showcase` SHALL use scroll-driven scrubbing per Requirement 3.2 rather than the static fallback.
-10. WHEN the `Device_Showcase` initially mounts, THE `Device_Showcase` SHALL defer loading of all screen artwork beyond the first screen of each project until the user enters within 200vh of the showcase region.
+9. WHEN the `Device_Showcase` initially mounts, THE `Device_Showcase` SHALL defer loading of all screen artwork beyond the first screen of each project until the user enters within 200vh of the showcase region.
 
 ### Requirement 4: Projects as Interactive Device Tiles
 
@@ -129,11 +128,11 @@ The overhaul targets three distinct visitors, in priority order:
 
 #### Acceptance Criteria
 
-1. WHEN the user hovers a `Tech_Stack_Grid` icon with a fine pointer, THE `Tech_Stack_Grid` SHALL apply a `Magnetic_Hover` translation up to 8 pixels toward the cursor and SHALL return to its origin within 400ms after the pointer leaves.
+1. WHEN the user hovers a `Tech_Stack_Grid` icon with a fine pointer, THE `Tech_Stack_Grid` SHALL apply a `Magnetic_Hover` translation toward the cursor whose magnitude SHALL be clamped to a hard maximum of 8 pixels on each axis (i.e. any computed translation that would exceed 8 pixels SHALL be capped at 8 pixels), and SHALL return to its origin within 400ms after the pointer leaves.
 2. WHEN the user hovers a `Tech_Stack_Grid` icon for at least 200ms, THE `Tech_Stack_Grid` SHALL display a tooltip containing the technology name and a single short "used in" hint (e.g. "Used in Chime"), positioned so it never clips outside the viewport.
 3. WHEN a `Tech_Stack_Grid` icon is activated by keyboard, THE `Tech_Stack_Grid` SHALL render the same tooltip as on hover and SHALL place a visible focus ring around the icon.
 4. WHILE the `Tech_Stack_Grid` enters the viewport, THE `Tech_Stack_Grid` SHALL stagger-reveal each icon with a per-icon delay between 20ms and 80ms.
-5. WHERE `Touch_Pointer_State` is active, THE `Tech_Stack_Grid` SHALL surface the tooltip on tap rather than on hover and SHALL dismiss the tooltip on tap-outside.
+5. WHERE `Touch_Pointer_State` is active, THE `Tech_Stack_Grid` SHALL surface the tooltip on tap rather than on hover and SHALL dismiss the tooltip immediately on tap-outside with no minimum display duration.
 6. IF `Reduced_Motion_State` is active, THEN THE `Tech_Stack_Grid` SHALL skip the magnetic translation and the stagger reveal, and SHALL render every icon in its final position.
 
 ### Requirement 7: Experience Timeline Motion
@@ -156,7 +155,7 @@ The overhaul targets three distinct visitors, in priority order:
 
 1. WHEN the `Contact_Section` enters the viewport, THE `Contact_Section` SHALL reveal the "Get in Touch" card and the "Send a Message" form in parallel with a stagger no greater than 120ms between them.
 2. WHEN the user focuses an input field in the message form, THE `Contact_Section` SHALL animate the field's border color and label position within 250ms in a Material-style floating-label transition.
-3. WHEN the user submits the message form, THE `Contact_Section` SHALL show an inline progress indicator within 100ms of submission and SHALL replace the indicator with a success or error state once the submission resolves.
+3. WHEN the user submits the message form, THE `Contact_Section` SHALL show an inline progress indicator within 100ms of submission and SHALL replace the indicator with a success or error state once the submission resolves, except WHERE the submission resolves before the 100ms deadline, in which case THE `Contact_Section` MAY skip the inline progress indicator entirely and transition directly to the success or error state without rendering a brief flash of the indicator.
 4. IF the message form fails validation, THEN THE `Contact_Section` SHALL display per-field error messages adjacent to the offending fields and SHALL move keyboard focus to the first invalid field.
 5. WHEN the user activates any quick-action link in "Get in Touch" (schedule call, email, LinkedIn, GitHub) by mouse, touch, or keyboard, THE `Contact_Section` SHALL render a Material-style ripple per Requirement 1.4.
 6. IF `Reduced_Motion_State` is active, THEN THE `Contact_Section` SHALL skip reveal animations and field focus animations and SHALL still render valid focus rings and validation feedback.
@@ -170,7 +169,7 @@ The overhaul targets three distinct visitors, in priority order:
 1. THE `Portfolio_Site` SHALL render a `Section_Rail` along the page that visually connects every primary section between `Hero_Section` and `Site_Footer`.
 2. WHILE the user scrolls, THE `Section_Rail` SHALL fill from top to bottom in proportion to the user's scroll progress through the page.
 3. WHEN the active section changes (i.e. a new section's start crosses a fixed scroll threshold from the top of the viewport), THE `Section_Rail` SHALL update its highlighted segment within 300ms.
-4. THE `Section_Rail` SHALL stay synchronized with the section index displayed by the `Scroll_Island_Nav`, such that both report the same active section at any time.
+4. THE `Section_Rail` SHALL stay synchronized with the section index displayed by the `Scroll_Island_Nav` at all times, including during transitions between active sections, such that both consumers SHALL report the same active section on every render tick and SHALL never present a temporarily desynchronized active section to the user.
 5. IF `Reduced_Motion_State` is active, THEN THE `Section_Rail` SHALL update its filled length and its highlighted segment instantly without easing.
 6. WHILE the viewport is narrower than 640px, THE `Section_Rail` SHALL hide itself and SHALL delegate section indication entirely to the `Scroll_Island_Nav`.
 
@@ -219,11 +218,11 @@ The overhaul targets three distinct visitors, in priority order:
 #### Acceptance Criteria
 
 1. THE `Intro_Overlay` SHALL preserve the existing GSAP FLIP morph from the "DHEERAJ" logo to the hero name (`data-morph-target="hero-name"`).
-2. THE `Intro_Overlay` SHALL display an `App_Boot_Animation` that includes an Android 16-style status-bar chrome reveal (time, signal, battery, indicator pill) and a centered logo rendered in the Android system-style font, completing within 1800ms before the FLIP morph begins.
+2. THE `Intro_Overlay` SHALL display an `App_Boot_Animation` that includes an Android 16-style status-bar chrome reveal (time, signal, battery, indicator pill) and a centered logo rendered in the Android system-style font, completing within 1800ms before the FLIP morph begins. IF the boot animation has not completed within 1800ms of the `Intro_Overlay` mounting, THEN THE `Intro_Overlay` SHALL cut the boot animation at exactly 1800ms and proceed to the FLIP morph.
 3. WHEN the user presses Escape or Enter, THE `Intro_Overlay` SHALL skip directly to the FLIP morph outro per the existing skip behavior.
 4. WHEN the `Intro_Overlay` has previously completed in the same browser (as recorded by the existing `intro-seen` flag), THE `Portfolio_Site` SHALL NOT render the `Intro_Overlay` on subsequent loads and SHALL render the `Hero_Section` immediately.
 5. IF `Reduced_Motion_State` is active, THEN THE `Intro_Overlay` SHALL skip both the `App_Boot_Animation` and the FLIP morph and SHALL complete its handoff to the portfolio within 200ms by setting `data-intro-active=done`, calling `onDone`, and persisting the `intro-seen` flag so the portfolio renders fully.
-6. WHILE the `Intro_Overlay` is active, THE `Intro_Overlay` SHALL set `data-intro-active` on the document element so that underlying portfolio CSS can suppress its own intro-time animations.
+6. WHILE the `Intro_Overlay` is active AND WHILE the `Intro_Overlay` is unmounting (i.e. after its outro begins but before the `Intro_Overlay` is fully removed from the DOM), THE `Intro_Overlay` SHALL set `data-intro-active` on the document element AND SHALL actively suppress portfolio animations (rather than merely exposing the flag), and this suppression SHALL persist until the `Intro_Overlay` is fully unmounted from the DOM.
 
 ### Requirement 14: Scroll Island Nav Motion
 
@@ -236,7 +235,7 @@ The overhaul targets three distinct visitors, in priority order:
 3. WHEN the user opens the section index dropdown, THE `Scroll_Island_Nav` SHALL animate the expansion with a spring transition completing within 400ms.
 4. WHEN the user selects a section from the index, THE `Scroll_Island_Nav` SHALL smooth-scroll the page to the section's top edge with the section's top aligned to a scroll-margin offset that accounts for the nav's pinned height.
 5. WHEN the user activates a section from the keyboard, THE `Scroll_Island_Nav` SHALL move keyboard focus to the destination section's primary heading after the scroll completes.
-6. WHILE the dropdown is open, THE `Scroll_Island_Nav` SHALL trap focus within the dropdown and SHALL close on Escape and on outside click or tap.
+6. WHILE the dropdown is open OR WHILE the dropdown is closing (including during any close animation, until the dropdown is fully closed), THE `Scroll_Island_Nav` SHALL trap focus within the dropdown and SHALL NOT release focus prematurely, and the dropdown SHALL close on Escape and on outside click or tap.
 7. IF `Reduced_Motion_State` is active, THEN THE `Scroll_Island_Nav` SHALL skip dropdown spring animation and SHALL use instant scroll positioning instead of smooth scrolling.
 
 ### Requirement 15: Mobile and Touch Experience
@@ -248,6 +247,7 @@ The overhaul targets three distinct visitors, in priority order:
 1. THE `Portfolio_Site` SHALL render a single-column layout at viewport widths below 640px in which no element overflows the viewport horizontally.
 2. WHEN a viewport is narrower than 768px, THE `Project_Showcase` SHALL behave as a bottom-sheet style surface that opens upward and SHALL be dismissible by a downward swipe of at least 80px on the sheet header.
 3. THE `Device_Showcase` carousel referenced in Requirement 3.7 SHALL respond to horizontal touch swipe with momentum, snap to the nearest screen on release, and SHALL expose pagination dots that are activatable by tap.
+
 4. THE `Portfolio_Site` SHALL provide a minimum touch target of 44px by 44px for every interactive element on viewports narrower than 768px.
 5. WHILE `Touch_Pointer_State` is active, THE `Portfolio_Site` SHALL replace hover-only animations across `Project_Card`, `Tech_Stack_Grid`, and `Hero_Section` with press-feedback equivalents per Requirements 1.5, 4.8, and 6.5.
 6. THE `Portfolio_Site` SHALL render the `Hero_Section` and the first project's `Phone_Frame` on a 390×844 device without horizontal scrolling or text clipping.
@@ -262,8 +262,8 @@ The overhaul targets three distinct visitors, in priority order:
 2. WHEN the `Portfolio_Site` is loaded on the same profile, THE `Portfolio_Site` SHALL achieve a Cumulative Layout Shift of 0.10 or less.
 3. WHEN the `Portfolio_Site` is loaded on the same profile, THE `Portfolio_Site` SHALL achieve an Interaction to Next Paint of 200 milliseconds or less for any of: opening a `Project_Showcase`, opening the `Scroll_Island_Nav` index, focusing a contact form input, activating a `Palette_Swatcher` swatch.
 4. THE `Portfolio_Site` SHALL defer initialization of any shader background (including the avatar shader and any hero halo shader) until the containing element is within 200vh of the viewport.
-5. THE `Portfolio_Site` SHALL lazy-load all `Device_Showcase` screen artwork beyond the first screen of each project per Requirement 3.10.
-6. WHEN the user's connection is reported as `2g` or `slow-2g` via `navigator.connection.effectiveType`, THE `Portfolio_Site` SHALL render static fallbacks in place of shader backgrounds and the `Device_Showcase` scroll scrubbing.
+5. THE `Portfolio_Site` SHALL lazy-load all `Device_Showcase` screen artwork beyond the first screen of each project per Requirement 3.9.
+6. WHEN the user's connection is reported as `2g` or `slow-2g` via `navigator.connection.effectiveType`, THE `Portfolio_Site` SHALL render static fallbacks in place of shader backgrounds and the `Device_Showcase` scroll scrubbing, regardless of whether shader-deferral per Requirement 16.4 has been triggered for those elements; this static-fallback rendering is a best-effort obligation, and IF the static-fallback rendering itself fails due to a technical error (e.g. a missing fallback asset or a runtime error during fallback rendering), THEN this requirement MAY be considered violated without blocking release.
 7. THE `Portfolio_Site` SHALL serve responsive image variants for every project cover and `Device_Showcase` screen at widths corresponding to mobile, tablet, and desktop viewports.
 
 ### Requirement 17: Accessibility and Reduced Motion
@@ -277,7 +277,7 @@ The overhaul targets three distinct visitors, in priority order:
 3. THE `Portfolio_Site` SHALL ensure that every interactive element is reachable via keyboard Tab order in document source order without keyboard traps outside of intentional focus traps in `Project_Showcase` and `Scroll_Island_Nav` dropdown.
 4. THE `Portfolio_Site` SHALL render a visible focus ring on every focusable element with a contrast ratio of at least 3:1 against the adjacent surface.
 5. THE `Portfolio_Site` SHALL provide a non-empty accessible name for every icon-only button and link, including social icons, Tech Stack icons, `Palette_Swatcher` swatches, and `Scroll_Island_Nav` controls.
-6. WHEN an element animates from invisible to visible during a reveal, THE `Portfolio_Site` SHALL keep the element present in the accessibility tree throughout the animation rather than toggling it via `display: none`.
+6. WHILE any element is animating — regardless of which property animates (including but not limited to opacity, transform, translate, scale, or position) and regardless of whether the element is currently visually invisible (e.g. `opacity: 0`, off-screen, or otherwise visually occluded) — THE `Portfolio_Site` SHALL keep that element present in the accessibility tree throughout the animation rather than toggling it via `display: none`, `visibility: hidden`, or `aria-hidden="true"`, including during reveal animations from invisible to visible and during animations on already-visible content.
 7. THE `Portfolio_Site` SHALL not depend on color alone to convey state for any active section indicator, form validation message, or success or error confirmation.
 
 ### Requirement 18: Component Gallery (Material 3 Expressive Primitives)
@@ -291,6 +291,7 @@ The overhaul targets three distinct visitors, in priority order:
 3. THE `Component_Gallery` SHALL keep the existing Tech Stack grid visible on the page (in the `Hero_Section` or directly above the gallery) so that no existing content is removed by the gallery's introduction.
 4. WHEN any primitive in the `Component_Gallery` is interacted with, THE `Component_Gallery` SHALL respond per the same motion language as the rest of the page (ripples per Requirement 1.4, springs per Requirement 1.2).
 5. IF `Reduced_Motion_State` is active, THEN THE `Component_Gallery` SHALL render every primitive in its idle visual state and SHALL still allow interactive feedback (state change) without the associated motion.
+6. IF the `Component_Gallery` mounts with zero Material 3 Expressive primitives available (e.g. due to a configuration error or a primitive-loading failure), THEN THE `Component_Gallery` SHALL hide the entire gallery section from the rendered output rather than render an empty container.
 
 ### Requirement 19: Correctness Properties (Property-Based Test Targets)
 

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono, Inter, JetBrains_Mono } from "next/font/google";
 import { ThemeProvider } from "@/components/theme-provider";
+import { MaterialAccentProvider } from "@/lib/theme/use-material-accent";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -67,7 +68,7 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          {children}
+          <MaterialAccentProvider>{children}</MaterialAccentProvider>
         </ThemeProvider>
       </body>
     </html>

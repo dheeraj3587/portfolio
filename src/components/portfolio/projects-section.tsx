@@ -1,33 +1,119 @@
 "use client";
 
-import Image from "next/image";
-import { useState } from "react";
-import { AnimatePresence, motion, useMotionTemplate, useMotionValue, useSpring, useTransform } from "motion/react";
-import { ExternalLink } from "lucide-react";
+/**
+ * ProjectsSection — owner of the container-transform state machine
+ * (task 7.3, Requirements 5.1 / 5.5).
+ *
+ * State contract:
+ *   - `activeProjectId: string | null` — the id of the project whose
+ *     showcase surface is currently open. `null` means no showcase is
+ *     mounted and the grid is in its idle, scrollable state.
+ *   - `isAnimating: boolean` — the transform lock. Flips to `true` the
+ *     moment a card is activated and back to `false` once `motion`
+ *     reports the layout transition has settled (driven by
+ *     `ProjectShowcase` via `onTransformSettle` in task 7.4).
+ *
+ * Activation guard (Requirement 5.5):
+ *   While `isAnimating === true`, `handleOpen` is a no-op. A second tap
+ *   on a card during the morph is silently ignored — there is no queued
+ *   animation, no flicker, no race.
+ *
+ * Card ref pool (Requirement 5.7 / 19.6):
+ *   Each `ProjectCard` registers its underlying `<button>` element with
+ *   `cardRefMap.current` on mount and removes itself on unmount. The
+ *   showcase reads this map on close to restore focus to the originating
+ *   card. The map is intentionally a `useRef` rather than `useState` so
+ *   registration / removal does not cause re-renders.
+ *
+ * Layout-shared morph:
+ *   `activeProjectId` selects the active project, which is then passed
+ *   to `<ProjectShowcase>`. Both the card (via task 7.2) and the
+ *   showcase (via task 7.4) declare matching `layoutId`s such as
+ *   `card-${id}` and `cover-${id}`, so `motion` runs the
+ *   container-transform automatically — no hand-rolled FLIP math.
+ */
+
+import { useCallback, useRef, useState } from "react";
+import { AnimatePresence } from "motion/react";
+import dynamic from "next/dynamic";
 import { projects, techById } from "@/lib/portfolio-data";
 import { Reveal } from "./reveal";
 import { SectionLabel } from "./section-label";
-import { GitHubIcon } from "./brand-icons";
-import { TechIcon } from "./tech-icon";
-import { ProjectShowcase } from "./project-showcase";
+import { ProjectCard } from "./project-card";
 
-type Project = (typeof projects)[number];
+/**
+ * `ProjectShowcase` is a heavy client surface — it pulls in `motion`'s
+ * shared-layout machinery, the focus-trap hook, and the device frame
+ * tree. Loading it through `next/dynamic({ ssr: false })` keeps that
+ * weight out of the initial page payload (task 16.1, Requirements 16.1 /
+ * 16.3); the chunk only arrives once a project card is activated.
+ *
+ * The showcase mounts inside `<AnimatePresence>` only when a project is
+ * active, so the natural `loading` state is "nothing" and the dynamic
+ * import never blocks the section's idle render.
+ */
+const ProjectShowcase = dynamic(
+  () => import("./project-showcase").then((m) => m.ProjectShowcase),
+  { ssr: false },
+);
 
 export function ProjectsSection() {
-  const [activeId, setActiveId] = useState<string | null>(null);
-  const active = projects.find((p) => p.id === activeId) ?? null;
+  const [activeProjectId, setActiveProjectId] = useState<string | null>(null);
+  const [isAnimating, setIsAnimating] = useState(false);
+
+  // Ref pool used to restore focus to the originating card after the
+  // showcase closes. Not state — registration must not trigger re-renders.
+  const cardRefMap = useRef<Map<string, HTMLElement>>(new Map());
+
+  const registerCardRef = useCallback(
+    (id: string, el: HTMLElement | null) => {
+      if (el) {
+        cardRefMap.current.set(id, el);
+      } else {
+        cardRefMap.current.delete(id);
+      }
+    },
+    [],
+  );
+
+  // Activation gate (Requirement 5.5). A second activation while the
+  // transform is still running is silently dropped.
+  const handleOpen = useCallback(
+    (id: string) => {
+      if (isAnimating) return;
+      setActiveProjectId(id);
+      setIsAnimating(true);
+    },
+    [isAnimating],
+  );
+
+  // Close just clears the active project; whether `isAnimating` should
+  // flip immediately or after the reverse transform settles is the
+  // showcase's concern (task 7.4 wires `onTransformSettle`).
+  const handleClose = useCallback(() => {
+    setActiveProjectId(null);
+  }, []);
+
+  // Called by `ProjectShowcase` when `motion` reports the layout
+  // transition has finished (task 7.4). Releases the activation gate.
+  const handleTransformSettle = useCallback(() => {
+    setIsAnimating(false);
+  }, []);
+
+  const active = projects.find((p) => p.id === activeProjectId) ?? null;
 
   return (
     <Reveal delay={120} className="mt-14">
-      <section id="projects">
+      <section id="projects" className="scroll-mt-32">
         <SectionLabel>Featured Projects</SectionLabel>
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           {projects.map((project) => (
             <ProjectCard
               key={project.id}
               project={project}
-              isActive={activeId === project.id}
-              onOpen={() => setActiveId(project.id)}
+              techById={techById}
+              onOpen={handleOpen}
+              registerRef={registerCardRef}
             />
           ))}
         </div>
@@ -37,172 +123,14 @@ export function ProjectsSection() {
             <ProjectShowcase
               project={active}
               techById={techById}
-              onClose={() => setActiveId(null)}
+              onClose={handleClose}
+              cardRefMap={cardRefMap}
+              isAnimating={isAnimating}
+              onTransformSettle={handleTransformSettle}
             />
           ) : null}
         </AnimatePresence>
       </section>
     </Reveal>
-  );
-}
-
-/* ──────────────────────────────────────────────────────────────────────── */
-/*                          P R O J E C T   C A R D                          */
-/* ──────────────────────────────────────────────────────────────────────── */
-
-const TILT_RANGE = 6; // degrees max
-const SPRING = { stiffness: 220, damping: 22, mass: 0.4 };
-
-function ProjectCard({
-  project,
-  isActive,
-  onOpen,
-}: {
-  project: Project;
-  isActive: boolean;
-  onOpen: () => void;
-}) {
-  // Mouse-driven 3D tilt
-  const mouseX = useMotionValue(0.5);
-  const mouseY = useMotionValue(0.5);
-  const rotateX = useSpring(useTransform(mouseY, [0, 1], [TILT_RANGE, -TILT_RANGE]), SPRING);
-  const rotateY = useSpring(useTransform(mouseX, [0, 1], [-TILT_RANGE, TILT_RANGE]), SPRING);
-
-  // Specular highlight that follows the cursor
-  const highlightX = useTransform(mouseX, (v) => `${v * 100}%`);
-  const highlightY = useTransform(mouseY, (v) => `${v * 100}%`);
-  const highlight = useMotionTemplate`radial-gradient(220px circle at ${highlightX} ${highlightY}, rgba(99,102,241,0.18), transparent 60%)`;
-
-  const handleMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    const rect = e.currentTarget.getBoundingClientRect();
-    mouseX.set((e.clientX - rect.left) / rect.width);
-    mouseY.set((e.clientY - rect.top) / rect.height);
-  };
-
-  const reset = () => {
-    mouseX.set(0.5);
-    mouseY.set(0.5);
-  };
-
-  return (
-    <motion.article
-      onMouseMove={handleMove}
-      onMouseLeave={reset}
-      whileHover={{ y: -4 }}
-      transition={{ type: "spring", stiffness: 300, damping: 24 }}
-      style={{ rotateX, rotateY, transformPerspective: 900 }}
-      className="group relative"
-    >
-      <button
-        type="button"
-        onClick={onOpen}
-        aria-label={`Open ${project.title} preview`}
-        className="block w-full text-left"
-        style={{ transform: "translateZ(0)" }}
-      >
-        <div
-          className="relative overflow-hidden rounded-xl border border-black/[0.06] bg-card-solid/60 shadow-sm transition-shadow duration-300 group-hover:shadow-[0_24px_60px_-30px_rgba(0,0,0,0.55)] dark:border-white/[0.07] dark:bg-white/[0.02] dark:group-hover:shadow-[0_30px_70px_-30px_rgba(0,0,0,0.85)]"
-        >
-          {/* Cursor-follow highlight */}
-          <motion.div
-            aria-hidden
-            className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100"
-            style={{ background: highlight }}
-          />
-
-          {/* Card image. Lumen's cover is a portrait composition, so we
-              use `object-contain` against the screen background to keep
-              the orb + greeting visible. Other projects keep `object-cover`. */}
-          <motion.div
-            className="relative aspect-video w-full overflow-hidden border-b border-border bg-muted"
-            style={
-              project.id === "lumen" ? { background: "#f8f6f2" } : undefined
-            }
-            animate={{ opacity: isActive ? 0 : 1 }}
-            transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
-          >
-            <Image
-              src={project.image}
-              alt={`${project.title} preview`}
-              fill
-              sizes="(max-width: 768px) 100vw, 384px"
-              className={`transition-transform duration-500 ease-out group-hover:scale-[1.04] ${
-                project.id === "lumen" ? "object-contain" : "object-cover"
-              }`}
-            />
-            <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/15 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
-          </motion.div>
-
-          <div className="relative px-6 py-6 sm:px-7 sm:py-7">
-            <div className="mb-2 flex items-start justify-between gap-3">
-              <h3 className="font-sans text-lg font-medium tracking-tight text-foreground sm:text-xl">
-                {project.title}
-              </h3>
-
-              <div
-                className="flex items-center gap-2"
-                onClick={(e) => e.stopPropagation()}
-              >
-                {project.links.github ? (
-                  <a
-                    href={project.links.github}
-                    target="_blank"
-                    rel="noreferrer"
-                    aria-label={`${project.title} GitHub`}
-                    title="View on GitHub"
-                    className="text-muted-2 transition-colors duration-150 hover:text-foreground"
-                  >
-                    <GitHubIcon className="size-[18px]" />
-                  </a>
-                ) : null}
-                {project.links.site ? (
-                  <a
-                    href={project.links.site}
-                    target="_blank"
-                    rel="noreferrer"
-                    aria-label={`${project.title} website`}
-                    title="Visit website"
-                    className="text-muted-2 transition-colors duration-150 hover:text-foreground"
-                  >
-                    <ExternalLink className="size-5" />
-                  </a>
-                ) : null}
-              </div>
-            </div>
-
-            <p className="mb-2 font-mono text-[11px] uppercase tracking-[0.16em] text-muted-2">
-              {project.subtitle}
-            </p>
-
-            <p className="mb-6 max-w-[24rem] font-sans text-[15px] leading-[1.75] font-[450] text-muted-foreground sm:text-base">
-              {project.description}
-            </p>
-
-            <div className="mt-auto flex flex-wrap items-center gap-3 opacity-95">
-              {project.stack.map((id) => {
-                const tech = techById.get(id);
-                return (
-                  <span
-                    key={id}
-                    className="inline-flex items-center gap-1.5 font-sans text-[13px] font-medium text-muted-foreground"
-                  >
-                    <TechIcon id={id} size="sm" showLabel={false} />
-                    {tech?.name ?? id}
-                  </span>
-                );
-              })}
-            </div>
-
-            {/* "Tap to open" hint */}
-            <span className="mt-5 inline-flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-[0.18em] text-muted-2 transition-colors duration-200 group-hover:text-foreground">
-              Tap to preview
-              <span aria-hidden className="inline-block transition-transform duration-300 group-hover:translate-x-0.5">
-                →
-              </span>
-            </span>
-          </div>
-        </div>
-      </button>
-    </motion.article>
   );
 }

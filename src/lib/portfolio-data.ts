@@ -127,6 +127,8 @@ export type Project = {
   image: string;
   links: { github?: string; site?: string };
   stack: string[];
+  device?: "android" | "ios";
+  showcaseKickers?: ReadonlyArray<{ screenId: string; kicker: string }>;
 };
 
 export const projects: Project[] = [
@@ -142,6 +144,12 @@ export const projects: Project[] = [
       github: "https://github.com/dheeraj3587/Chime",
     },
     stack: ["kotlin", "jetpack-compose", "firebase", "hilt", "mvvm"],
+    device: "android",
+    showcaseKickers: [
+      { screenId: "inbox-001", kicker: "Realtime chat" },
+      { screenId: "chat-001", kicker: "Push delivery" },
+      { screenId: "compose-001", kicker: "Compose UI" },
+    ],
   },
   {
     id: "lumen",
@@ -152,6 +160,12 @@ export const projects: Project[] = [
     image: "/images/projects/lumen-cover.png",
     links: { github: "https://github.com/dheeraj3587/lumen" },
     stack: ["kotlin", "jetpack-compose", "android", "ai"],
+    device: "ios",
+    showcaseKickers: [
+      { screenId: "home-001", kicker: "Voice-first AI" },
+      { screenId: "results-001", kicker: "Moodboards" },
+      { screenId: "moodboard-001", kicker: "Shot lists" },
+    ],
   },
 ];
 

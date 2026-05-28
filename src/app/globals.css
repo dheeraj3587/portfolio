@@ -596,3 +596,222 @@ html[data-intro-active="done"] [data-portfolio-under-intro],
     background: rgba(20, 20, 22, 0.9);
   }
 }
+
+
+/* ─────────────────────────────────────────────────────────────────────
+ * §15 — Accent tokens · Typography scale · Surfaces · Focus rings
+ *
+ * Task 15.1.  Validates Requirements 10.1–10.5, 11.3, 12.1–12.5,
+ * 15.4, 17.4.
+ *
+ * Token sources:
+ *   • The numeric accent channels (--accent-h, --accent-s, --accent-l)
+ *     and --accent-hex are written imperatively by
+ *     `src/lib/theme/use-material-accent.ts` whenever the user picks a
+ *     swatch in `Palette_Swatcher`.  The :root values below are the
+ *     SSR-safe defaults so accent-tinted surfaces hydrate without
+ *     flicker if hydration is slow or JS is disabled (Req 11.5).
+ *   • --ring-accent / --ripple-accent / --halo-stop-1 / --halo-stop-2
+ *     are derived tokens consumed by Ripple, Material_Halo_Shader, and
+ *     focus-ring outlines (Req 11.3).
+ *   • The :root transition rule crossfades the accent vars within
+ *     250 ms (`motionDurations.themeCrossfade`) per Req 11.3 / 12.5.
+ *     CSS custom properties only transition when typed via @property,
+ *     so we declare the four accent channels there first.
+ * ─────────────────────────────────────────────────────────────────── */
+
+@property --accent-h {
+  syntax: "<number>";
+  inherits: true;
+  initial-value: 142;
+}
+
+@property --accent-s {
+  syntax: "<number>";
+  inherits: true;
+  initial-value: 0.18;
+}
+
+@property --accent-l {
+  syntax: "<number>";
+  inherits: true;
+  initial-value: 0.55;
+}
+
+@property --accent-hex {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: #34a853;
+}
+
+:root {
+  /* Canonical OKLCH triplet for the default android-green seed
+     (design.md §C.2).  Material_Accent overrides these on
+     documentElement when a different seed activates. */
+  --accent-h: 142;
+  --accent-s: 0.18;
+  --accent-l: 0.55;
+  --accent-hex: #34a853;
+
+  /* Derived tokens (Req 11.3 / 11.6 / 17.4). */
+  --ring-accent: oklch(var(--accent-l) var(--accent-s) var(--accent-h));
+  --ripple-accent: oklch(0.7 var(--accent-s) var(--accent-h) / 0.4);
+  --halo-stop-1: oklch(0.7 var(--accent-s) var(--accent-h));
+  --halo-stop-2: oklch(0.85 calc(var(--accent-s) * 0.6) var(--accent-h));
+
+  /* Light-theme elevation ladder.  Page-level surfaces stay near white
+     with ≥80% of the visible area within CIE L* ∈ [92, 100]
+     (Req 12.1).  OKLCH lightness here is roughly L* / 100. */
+  --surface-elev-0: oklch(0.99 0 0); /* L* ≈ 99 */
+  --surface-elev-1: oklch(0.97 0 0); /* L* ≈ 97 */
+  --surface-elev-2: oklch(0.95 0 0); /* L* ≈ 95 */
+  --surface-elev-3: oklch(0.93 0 0); /* L* ≈ 93 */
+
+  /* Vertical-rhythm tokens (Req 10.3).  Section / child gap ratio is
+     6rem / 2.5rem = 2.4× which clears the ≥1.5× threshold. */
+  --gap-section: 6rem;
+  --gap-child: 2.5rem;
+
+  /* Accent-channel crossfade.  Each channel is typed via @property
+     above so the OKLCH composition transitions smoothly (Req 11.3). */
+  transition:
+    --accent-h 250ms ease-out,
+    --accent-s 250ms ease-out,
+    --accent-l 250ms ease-out,
+    --accent-hex 250ms ease-out;
+}
+
+.dark {
+  /* Dark elevation ladder — adjacent stacked surfaces differ by ≥2 L*
+     units (Req 12.2).  Hue is biased a touch cool so the dark theme
+     reads like a real Android dark mode rather than an inverted copy
+     of the light theme (Req 12.2 user story).
+     OKLCH lightness deltas here are 0.03–0.04, giving ≈3 L* units. */
+  --surface-elev-0: oklch(0.10 0.005 264); /* L* ≈ 10 */
+  --surface-elev-1: oklch(0.13 0.005 264); /* L* ≈ 13 */
+  --surface-elev-2: oklch(0.16 0.006 264); /* L* ≈ 16 */
+  --surface-elev-3: oklch(0.20 0.006 264); /* L* ≈ 20 */
+}
+
+/* Theme-dependent surface crossfade (Req 12.5).  Scoped to elements
+   that paint background or text from theme tokens; geometry, opacity,
+   and scroll position never animate from this rule. */
+body,
+:where([data-theme-surface], main, header, footer, aside, section) {
+  transition:
+    background-color 250ms ease-out,
+    color 250ms ease-out,
+    border-color 250ms ease-out;
+}
+
+/* ── Typography scale (Req 10.1 / 10.2) ──
+ *
+ * --text-hero (5rem / 80 px) is ≥1.6× --text-h1 (3rem / 48 px); the
+ * ratio is 80 / 48 ≈ 1.667 (Req 10.1).  Section labels ("kickers")
+ * are rendered via `.section-kicker` in a monospaced font with
+ * letter-spacing 0.16em — the midpoint of the 0.12–0.20em band
+ * Req 10.2 mandates.
+ *
+ * Body line-height ≥1.65 (Req 10.5) and line-length ≤72ch (Req 10.4)
+ * are enforced by the responsive rules below. */
+@theme inline {
+  --text-hero: 5rem;
+  --text-h1: 3rem;
+  --text-h2: 2.25rem;
+  --text-h3: 1.875rem;
+  --text-h4: 1.5rem;
+  --text-body: 1rem;
+  --text-kicker: 0.8125rem;
+  --leading-body: 1.65;
+}
+
+.section-kicker {
+  font-family: var(--font-mono);
+  font-size: var(--text-kicker);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  color: var(--muted-foreground);
+}
+
+/* Body line-height clears 1.65 once the viewport reaches 640 px
+   (Req 10.5). */
+@media (min-width: 640px) {
+  body {
+    line-height: var(--leading-body, 1.65);
+  }
+}
+
+/* Body line-length caps at 72 characters from 1024 px up (Req 10.4).
+   Applied via the `.prose-body` opt-in (or a `[data-prose-body]`
+   attribute hook) so it does not narrow grids or cards. */
+@media (min-width: 1024px) {
+  .prose-body,
+  [data-prose-body] {
+    max-width: 72ch;
+  }
+}
+
+/* ── Focus-ring utility (Req 17.4) ──
+ *
+ * Single canonical class applied via :focus-visible.  The outline color
+ * uses the live --ring-accent token so it tracks the active seed AND
+ * the active theme; Property 8 (`resolveFocusRing`) keeps the contrast
+ * ratio ≥3:1 against the surface across every seed × theme combo. */
+.focus-ring:focus-visible {
+  outline: 2px solid var(--ring-accent);
+  outline-offset: 2px;
+}
+
+/* ── Touch targets (Req 15.4) ──
+ *
+ * Under 768 px every interactive control reaches at least 44×44 px
+ * (the Tailwind equivalent is `min-h-11 min-w-11`) to meet WCAG 2.5.5
+ * target-size guidance.  We use :where() so the rule keeps a 0-
+ * specificity contribution and component styles can still override
+ * when a larger or smaller hit area is intentional. */
+@media (max-width: 767px) {
+  :where(button, [role="button"], a[href], input[type="button"], input[type="submit"], input[type="reset"], select) {
+    min-height: 2.75rem; /* 44 px */
+    min-width: 2.75rem;  /* 44 px */
+  }
+}
+
+/* Reduced motion strips both the accent-channel crossfade and the
+   theme-surface crossfade so palette / theme flips are instant
+   (Req 17.2 + Property 1). */
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    transition: none;
+  }
+  body,
+  :where([data-theme-surface], main, header, footer, aside, section) {
+    transition: none;
+  }
+}
+
+
+/* ─────────────────────────────────────────────────────────────────────
+ * §14.3 — Suppress portfolio animations while intro overlay is mounted
+ *
+ * Validates Requirement 13.6.
+ *
+ * The IntroOverlay sets `html[data-intro-active]` to a phase token
+ * (e.g. `"boot"`, `"outro"`) while it is mounted, and only flips it to
+ * `"done"` after the overlay has fully unmounted. Until that happens we
+ * actively *pause* every CSS animation and disable every transition
+ * inside `<main>` so portfolio reveals, role-rotators, and other timed
+ * effects don't burn through their cycles behind the boot screen.
+ *
+ * The `:where()` wrapper keeps specificity at 0, so component styles
+ * (and the reduced-motion overrides above) can still take precedence.
+ * Targeting `*`, `*::before`, and `*::after` covers pseudo-element
+ * decorations that often carry the actual animation. `transition: none`
+ * is required because `animation-play-state` doesn't affect transitions.
+ * ─────────────────────────────────────────────────────────────────── */
+:where(html[data-intro-active]:not([data-intro-active="done"])) main *,
+:where(html[data-intro-active]:not([data-intro-active="done"])) main *::before,
+:where(html[data-intro-active]:not([data-intro-active="done"])) main *::after {
+  animation-play-state: paused !important;
+  transition: none !important;
+}

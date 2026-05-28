@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@aliimam/logos": "^1.0.3",
+    "@floating-ui/react": "^0.27.19",
     "@paper-design/shaders-react": "^0.0.76",
     "@radix-ui/react-avatar": "^1.1.11",
     "@radix-ui/react-separator": "^1.1.8",

@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { PaletteSwatcher } from "@/components/portfolio/palette-swatcher";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { navItems } from "@/lib/portfolio-data";
 import { cn } from "@/lib/utils";
@@ -65,7 +66,17 @@ export function SiteHeader() {
               );
             })}
           </div>
-          <ThemeToggle />
+          <div className="flex items-center gap-3">
+            {/* Palette_Swatcher is reachable from the Site_Header on viewports
+                ≥768px (Requirement 11.2). On narrower viewports the swatcher
+                is surfaced via Scroll_Island_Nav instead. The existing
+                ThemeToggle entry point and persistence are preserved
+                (Requirement 12.3). */}
+            <div className="hidden items-center md:flex">
+              <PaletteSwatcher layout="header" />
+            </div>
+            <ThemeToggle />
+          </div>
         </div>
       </nav>
     </header>

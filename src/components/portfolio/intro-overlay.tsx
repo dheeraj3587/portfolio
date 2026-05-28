@@ -3,6 +3,8 @@
 import { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import { ScrollTextMotion } from "@/components/ui/scroll-text-motion";
+import { motionDurations, useReducedMotionState } from "@/lib/motion-engine";
+import { AndroidBootOverlay } from "./android-boot-overlay";
 import { INTRO_GROUPS } from "./intro-data";
 
 interface IntroOverlayProps {
@@ -12,13 +14,32 @@ interface IntroOverlayProps {
   morphTargetSelector?: string;
 }
 
+/**
+ * Three-phase intro lifecycle:
+ *
+ *   "boot"  → `AndroidBootOverlay` paints the Android 16 status-bar reveal
+ *             and centered logo. Self-completes within 1800 ms.
+ *   "intro" → existing `ScrollTextMotion` becomes the active surface, the
+ *             skip pill / scroll hint render.
+ *   "outro" → existing GSAP FLIP morph onto `[data-morph-target="hero-name"]`
+ *             runs and the host fades out.
+ *
+ * `data-intro-active` on `<html>` follows the phase so portfolio CSS /
+ * `globals.css` can pause animations until the overlay fully unmounts
+ * (Requirement 13.6). It only flips to `"done"` from the unmount cleanup
+ * — never inside the outro timeline — so the suppression rule covers the
+ * full unmount tail.
+ */
+type IntroPhase = "boot" | "intro" | "outro";
+
 export function IntroOverlay({
   onDone,
   morphTargetSelector = "[data-morph-target='hero-name']",
 }: IntroOverlayProps) {
   const hostRef = useRef<HTMLDivElement>(null);
-  const [phase, setPhase] = useState<"intro" | "outro">("intro");
+  const [phase, setPhase] = useState<IntroPhase>("boot");
   const finishedRef = useRef(false);
+  const reduced = useReducedMotionState();
 
   /**
    * Run the outro: morph the floating logo onto the portfolio's name and
@@ -57,13 +78,11 @@ export function IntroOverlay({
         } catch {
           /* storage disabled — ignore */
         }
-        document.documentElement.dataset.introActive = "done";
+        // NB: `data-intro-active` stays at "outro" here. The unmount-cleanup
+        // effect flips it to "done" only after IntroOverlay has been removed
+        // from the DOM, so portfolio animation suppression (Requirement
+        // 13.6) covers the full unmount tail.
         onDone();
-        // Clean up the data attribute on the next tick so portfolio CSS
-        // can finish any transition before reverting.
-        window.setTimeout(() => {
-          delete document.documentElement.dataset.introActive;
-        }, 60);
       },
     });
 
@@ -129,8 +148,76 @@ export function IntroOverlay({
     );
   };
 
-  // Auto-detect bottom of the intro
+  /**
+   * Skip handler shared by Esc/Enter and the on-screen button. During the
+   * boot phase the FLIP source (`.scroll-text-logo`) does not yet exist, so
+   * we advance to the intro phase first and defer `runOutro()` until
+   * `ScrollTextMotion` has mounted and laid out (next two frames).
+   */
+  const skipIntro = () => {
+    if (finishedRef.current) return;
+    if (phase === "boot") {
+      setPhase("intro");
+      window.requestAnimationFrame(() => {
+        window.requestAnimationFrame(runOutro);
+      });
+      return;
+    }
+    runOutro();
+  };
+
+  // Drive `data-intro-active` from the phase. The "outro" attribute write
+  // is owned by `runOutro()` itself (it sets it before kicking off the
+  // GSAP timeline), and the "done" write is owned by the unmount cleanup
+  // below, so we only handle "boot" / "intro" here.
   useEffect(() => {
+    if (phase === "boot") {
+      document.documentElement.dataset.introActive = "boot";
+    } else if (phase === "intro") {
+      document.documentElement.dataset.introActive = "intro";
+    }
+  }, [phase]);
+
+  // On unmount, flip to "done" and then clear the attribute on the next
+  // tick so portfolio CSS can finish any transition before reverting.
+  useEffect(() => {
+    return () => {
+      document.documentElement.dataset.introActive = "done";
+      window.setTimeout(() => {
+        if (document.documentElement.dataset.introActive === "done") {
+          delete document.documentElement.dataset.introActive;
+        }
+      }, 60);
+    };
+  }, []);
+
+  // Reduced-motion fast handoff (Requirement 13.5). `IntroGate` already
+  // short-circuits to "skip" when reduced motion is on at first paint, so
+  // this branch only ever runs if the user toggled the system preference
+  // AFTER the gate decided to show the overlay. Either way we must reach
+  // the same end state (`intro-seen=1`, `data-intro-active=done`, `onDone`)
+  // within `motionDurations.reducedMotionHandoff` (200 ms).
+  useEffect(() => {
+    if (!reduced) return;
+    if (finishedRef.current) return;
+    finishedRef.current = true;
+    const id = window.setTimeout(() => {
+      document.documentElement.dataset.introActive = "done";
+      try {
+        window.localStorage.setItem("intro-seen", "1");
+      } catch {
+        /* storage disabled — ignore */
+      }
+      onDone();
+    }, motionDurations.reducedMotionHandoff);
+    return () => window.clearTimeout(id);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [reduced]);
+
+  // Auto-detect bottom of the scroll-text segment. Only active during the
+  // intro phase — there is nothing to scroll through during the boot.
+  useEffect(() => {
+    if (phase !== "intro") return;
     const onScroll = () => {
       const { scrollTop } = document.documentElement;
       const scrollHeight =
@@ -142,28 +229,32 @@ export function IntroOverlay({
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [phase]);
 
-  // Esc / Enter skip
+  // Esc / Enter skip — works in every phase via `skipIntro`.
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape" || e.key === "Enter") runOutro();
+      if (e.key === "Escape" || e.key === "Enter") skipIntro();
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [phase]);
 
   return (
     <div ref={hostRef} className="intro-host" data-phase={phase}>
-      <ScrollTextMotion groups={INTRO_GROUPS} logo="DHEERAJ" />
+      {phase === "boot" ? (
+        <AndroidBootOverlay onComplete={() => setPhase("intro")} />
+      ) : (
+        <ScrollTextMotion groups={INTRO_GROUPS} logo="DHEERAJ" />
+      )}
 
       {phase === "intro" ? (
         <>
           <div className="intro-hint">Scroll ↓</div>
           <button
             type="button"
-            onClick={runOutro}
+            onClick={skipIntro}
             className="intro-skip"
             aria-label="Skip intro"
           >

@@ -10,29 +10,45 @@ import {
 } from "@/components/portfolio/github-contributions";
 import { getCachedContributions } from "@/lib/get-cached-contributions";
 import { profile, socialLinks, techStack } from "@/lib/portfolio-data";
+import { AnimatedCounter } from "./animated-counter";
+import { AvatarParallaxTilt } from "./avatar-parallax-tilt";
+import { MaterialHaloShader } from "./material-halo-shader";
+import {
+  HeroStaggerItem,
+  HeroStaggerOrchestrator,
+} from "./hero-stagger-orchestrator";
 import { Reveal } from "./reveal";
 import { SectionLabel } from "./section-label";
 import { GitHubIcon, LinkedInIcon } from "./brand-icons";
-import { TechIcon } from "./tech-icon";
+import { TechIconGrid } from "./tech-icon-grid";
 
 export function ProfileSection() {
   const contributions = getCachedContributions(profile.githubUsername);
 
   return (
-    <section id="home">
-
-      {/* ── 1. Avatar + Name + Role ── */}
-      <Reveal>
-        <div className="mb-10 flex items-center gap-5">
-          <LiquidMetalAvatar
-            size="lg"
-            className="size-[4.5rem] shrink-0 sm:size-20"
-            aria-label={profile.name}
-          >
-            <AvatarFallback className="rounded-full bg-gradient-to-br from-zinc-100 to-zinc-200 text-2xl font-semibold tracking-tight text-zinc-600 dark:from-zinc-800 dark:to-zinc-900 dark:text-zinc-300">
-              {profile.initials}
-            </AvatarFallback>
-          </LiquidMetalAvatar>
+    <section id="home" className="scroll-mt-32">
+      {/* ── Hero block — staggered reveal (avatar / name / meta / bio / DSA / socials) ── */}
+      <HeroStaggerOrchestrator>
+        {/* ── 1. Avatar + Name + Role ── */}
+        <HeroStaggerItem className="mb-10 flex items-center gap-5">
+          {/* Halo lives in a positioned wrapper so it sits behind the avatar
+              without affecting the row layout. The wrapper is `relative` so
+              the absolutely-positioned `<MaterialHaloShader />` anchors to
+              the avatar bounds. */}
+          <div className="relative shrink-0">
+            <MaterialHaloShader className="-z-10 -inset-6 sm:-inset-8" />
+            <AvatarParallaxTilt>
+              <LiquidMetalAvatar
+                size="lg"
+                className="size-[4.5rem] sm:size-20"
+                aria-label={profile.name}
+              >
+                <AvatarFallback className="rounded-full bg-gradient-to-br from-zinc-100 to-zinc-200 text-2xl font-semibold tracking-tight text-zinc-600 dark:from-zinc-800 dark:to-zinc-900 dark:text-zinc-300">
+                  {profile.initials}
+                </AvatarFallback>
+              </LiquidMetalAvatar>
+            </AvatarParallaxTilt>
+          </div>
 
           <div className="min-w-0">
             <h1
@@ -49,12 +65,10 @@ export function ProfileSection() {
               </div>
             </div>
           </div>
-        </div>
-      </Reveal>
+        </HeroStaggerItem>
 
-      {/* ── 2. LOCATION / EMAIL / PRONOUNS — three columns ── */}
-      <Reveal delay={80}>
-        <div className="mb-10 flex flex-wrap gap-x-12 gap-y-5 sm:gap-x-16">
+        {/* ── 2. LOCATION / EMAIL / PRONOUNS — three columns ── */}
+        <HeroStaggerItem className="mb-10 flex flex-wrap gap-x-12 gap-y-5 sm:gap-x-16">
           <MetaCol
             label="Location"
             icon={<MapPin className="size-[15px]" />}
@@ -71,62 +85,62 @@ export function ProfileSection() {
             icon={<UserRound className="size-[15px]" />}
             value={profile.pronouns}
           />
-        </div>
-      </Reveal>
+        </HeroStaggerItem>
 
-      {/* ── 3. Bio ── */}
-      <Reveal delay={140}>
-        <p
-          id="about"
-          className="mb-10 scroll-mt-32 font-sans text-base font-[450] leading-[1.85] text-muted-foreground sm:text-lg"
-        >
-          I build Android apps and backend services end-to-end, obsessing over
-          the details that make software feel right to use. Currently working
-          with{" "}
-          <a
-            className="text-foreground underline-offset-2 hover:underline"
-            href="https://kotlinlang.org/"
-            target="_blank"
-            rel="noreferrer"
+        {/* ── 3. Bio ── */}
+        <HeroStaggerItem>
+          <p
+            id="about"
+            className="mb-10 scroll-mt-32 font-sans text-base font-[450] leading-[1.85] text-muted-foreground sm:text-lg"
           >
-            Kotlin
-          </a>
-          ,{" "}
-          <a
-            className="text-foreground underline-offset-2 hover:underline"
-            href="https://developer.android.com/jetpack/compose"
-            target="_blank"
-            rel="noreferrer"
-          >
-            Jetpack Compose
-          </a>
-          ,{" "}
-          <a
-            className="text-foreground underline-offset-2 hover:underline"
-            href="https://spring.io/projects/spring-boot"
-            target="_blank"
-            rel="noreferrer"
-          >
-            Spring Boot
-          </a>
-          , and{" "}
-          <a
-            className="text-foreground underline-offset-2 hover:underline"
-            href="https://www.postgresql.org/"
-            target="_blank"
-            rel="noreferrer"
-          >
-            PostgreSQL
-          </a>
-          .
-        </p>
-      </Reveal>
+            I build Android apps and backend services end-to-end, obsessing
+            over the details that make software feel right to use. Currently
+            working with{" "}
+            <a
+              className="text-foreground underline-offset-2 hover:underline"
+              href="https://kotlinlang.org/"
+              target="_blank"
+              rel="noreferrer"
+            >
+              Kotlin
+            </a>
+            ,{" "}
+            <a
+              className="text-foreground underline-offset-2 hover:underline"
+              href="https://developer.android.com/jetpack/compose"
+              target="_blank"
+              rel="noreferrer"
+            >
+              Jetpack Compose
+            </a>
+            ,{" "}
+            <a
+              className="text-foreground underline-offset-2 hover:underline"
+              href="https://spring.io/projects/spring-boot"
+              target="_blank"
+              rel="noreferrer"
+            >
+              Spring Boot
+            </a>
+            , and{" "}
+            <a
+              className="text-foreground underline-offset-2 hover:underline"
+              href="https://www.postgresql.org/"
+              target="_blank"
+              rel="noreferrer"
+            >
+              PostgreSQL
+            </a>
+            .
+          </p>
+        </HeroStaggerItem>
 
-      {/* ── 4. DSA stats line ── */}
-      <Reveal delay={200}>
-        <div className="mb-8 flex items-center gap-3 font-sans text-sm text-muted-foreground sm:text-base">
+        {/* ── 4. DSA stats line ── */}
+        <HeroStaggerItem className="mb-8 flex items-center gap-3 font-sans text-sm text-muted-foreground sm:text-base">
           <CodeIcon />
-          <span className="font-medium text-foreground">500+ DSA solved</span>
+          <span className="font-medium text-foreground">
+            <AnimatedCounter target={500} suffix="+" /> DSA solved
+          </span>
           <span className="text-muted-2">—</span>
           <a
             href={socialLinks.leetcode}
@@ -145,12 +159,10 @@ export function ProfileSection() {
           >
             Codeforces · @joshidheeraj8782
           </a>
-        </div>
-      </Reveal>
+        </HeroStaggerItem>
 
-      {/* ── 5. Social icons ── */}
-      <Reveal delay={240}>
-        <div className="mb-8 flex items-center gap-5">
+        {/* ── 5. Social icons ── */}
+        <HeroStaggerItem className="mb-8 flex items-center gap-5">
           <a
             aria-label="GitHub profile"
             href={socialLinks.github}
@@ -185,8 +197,8 @@ export function ProfileSection() {
           >
             <Mail className="size-6" />
           </a>
-        </div>
-      </Reveal>
+        </HeroStaggerItem>
+      </HeroStaggerOrchestrator>
 
       {/* ── GitHub contributions ── */}
       <Reveal delay={300}>
@@ -197,15 +209,16 @@ export function ProfileSection() {
         </div>
       </Reveal>
 
-      {/* ── Tech Stack ── */}
+      {/* ── Tech Stack ──
+          The `#components` anchor used to live on this wrapper. Task 15.3
+          mounts `<ComponentGallery>` as the sibling that owns
+          `<section id="components">` next door (Requirements 18.1, 18.2,
+          20.4), so the anchor is preserved on the gallery and the Tech
+          Stack stays visible above it without a duplicate id. */}
       <Reveal delay={360} className="mt-16">
-        <div id="components">
+        <div>
           <SectionLabel>Tech Stack</SectionLabel>
-          <div className="flex flex-wrap items-center gap-x-6 gap-y-6 sm:gap-x-7">
-            {techStack.map((tech) => (
-              <TechIcon key={tech.id} id={tech.id} />
-            ))}
-          </div>
+          <TechIconGrid techIds={techStack.map((tech) => tech.id)} />
         </div>
       </Reveal>
     </section>
